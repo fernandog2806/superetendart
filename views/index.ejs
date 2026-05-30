@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SUPER ETENDART | Página principal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- La barra '/' al principio es clave para Node.js -->
+    <link rel="stylesheet" href="/main.css">
+</head>
+
+<body class="siluetas">
+
+    <!-- El index no lleva include del nav porque va limpio -->
+
+    <h1 class="silueta-h1"><a href="/historia">SUPER ETENDART</a></h1>
+
+    <div class="siluetas-container">
+        <!-- Recorremos dinámicamente el array de integrantes enviado por el servidor -->
+        <% integrantes.forEach(músico=> { %>
+            <div class="silueta-box" tabindex="0" onclick="window.location.href='/historia'" style="cursor: pointer;">
+                <img src="/<%= músico.silueta %>" alt="<%= músico.alt %>" class="silueta-img">
+                <div class="silueta-label">
+                    <%= músico.nombre %>
+                </div>
+            </div>
+            <% }) %>
+    </div>
+
+    <!-- Tu script original de responsive unwrap -->
+    <script>
+        const mediaQuery = window.matchMedia('(max-width: 1223px)');
+        let originalHTML = null;
+
+        function unwrapCards() {
+            const container = document.querySelector('.siluetas-container');
+            if (!container) return;
+            if (originalHTML === null) originalHTML = container.innerHTML;
+            const cards = container.querySelectorAll('.silueta-box');
+            cards.forEach(card => {
+                const parent = card.parentNode;
+                while (card.firstChild) parent.insertBefore(card.firstChild, card);
+                parent.removeChild(card);
+            });
+        }
+
+        function handleResize(e) {
+            const container = document.querySelector('.siluetas-container');
+            if (e.matches) { unwrapCards(); }
+            else if (container && originalHTML !== null) { container.innerHTML = originalHTML; }
+        }
+
+        mediaQuery.addEventListener('change', handleResize);
+        window.addEventListener('DOMContentLoaded', () => { if (mediaQuery.matches) unwrapCards(); });
+    </script>
+</body>
+
+</html>

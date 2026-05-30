@@ -1,0 +1,61 @@
+<%- include('partials/nav') %>
+
+    <!DOCTYPE html>
+    <html lang="es">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Videos | SUPER ETENDART</title>
+        <!-- La barra '/' al principio asegura que encuentre tu CSS siempre -->
+        <link rel="stylesheet" href="/main.css">
+        <!-- Font Awesome -->
+        <link href="https://cloudflare.com" rel="stylesheet">
+    </head>
+
+    <body>
+        <!-- El include de arriba inyecta automáticamente tu <nav> dinámico -->
+
+        <main>
+            <section class="videos-section">
+                <h1>Videos</h1>
+                <div class="video-box">
+                    <h2>SUPER ETENDART - Primer Vivo</h2>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/lSJ5Y0sB2z0" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
+                <div class="video-box">
+                    <h2>SUPER ETENDART - Alto</h2>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/epiNyJ0ijYQ" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
+        
+                <div class="video-box">
+                    <h2>SUPER ETENDART - Horizontes</h2>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/80mnkuVfA14" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
+                <div class="video-box">
+                    <h2>SUPER ETENDART - Ficciones</h2>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/giFDYRROir8" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
+                <div class="video-box">
+                    <h2>SUPER ETENDART - Teledirigidos</h2>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/mvT8rdN0KOI" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
+        
+                <!-- Agrega más iframes para otros videos -->
+            </section>
+        </main>
+
+        <%- include('partials/footer') %>
+    </body>
+
+    </html>
