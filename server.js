@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 const path = require('path');
 
+// Configurar Express para que ignore las barras del final (Evita el error Cannot GET /fotos/)
+app.set('strict routing', false);
+
 // Configurar EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -15,13 +18,12 @@ const enlacesNav = [
     { texto: "Álbum", url: "/album", clase: "" },
     { texto: "Integrantes", url: "/integrantes", clase: "" },
     { texto: "Videos", url: "/video", clase: "" },
+    { texto: "Fotos", url: "/fotos", clase: "" },
     { texto: "Spotify | SUPER ETENDART", url: "https://spotify.com", clase: "spotify-link" },
     { texto: "YouTube | SUPERETENDART", url: "https://youtube.com", clase: "youtube-link" },
     { texto: "Instagram | SUPER ETENDART", url: "https://instagram.com", clase: "instagram-link" },
     { texto: "Facebook | SUPERETENDART", url: "https://facebook.com", clase: "facebook-link" }
 ];
-
-
 
 const integrantes = [
     {
@@ -64,7 +66,8 @@ const listaVideos = [
 // Middleware para inyectar datos del menú a todas las páginas automáticamente
 app.use((req, res, next) => {
     res.locals.enlacesNav = enlacesNav;
-    res.locals.paginaActual = req.path;
+    // Eliminamos la barra final de req.path si existe para mantener limpia la variable paginaActual
+    res.locals.paginaActual = req.path.replace(/\/$/, "");
     next();
 });
 
@@ -74,6 +77,18 @@ app.get('/historia', (req, res) => res.render('historia'));
 app.get('/album', (req, res) => res.render('album'));
 app.get('/integrantes', (req, res) => res.render('integrantes', { integrantes }));
 app.get('/video', (req, res) => res.render('video', { listaVideos }));
+
+// NUEVA RUTA CORREGIDA: Feed de fotos de la banda
+app.get('/fotos', (req, res) => {
+    const fotosLocales = [
+        'fotos/portada.jpg',
+        'fotos/portada2.jpg',
+        'fotos/luis.jpg',
+        'fotos/manu.jpg',
+        'fotos/poli.jpg'
+    ];
+    res.render('fotos', { fotos: fotosLocales });
+});
 
 // Encender Servidor
 const PORT = 3000;

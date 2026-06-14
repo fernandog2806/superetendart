@@ -1,4 +1,5 @@
-<% let menuFiltrado=enlacesNav.filter(enlace=> enlace.url !== paginaActual);
+<% // Filtra el menú dinámicamente para ocultar el botón de la página en la que estás parado let
+    menuFiltrado=enlacesNav.filter(enlace=> enlace.url !== paginaActual);
     %>
     <nav class="navbar">
         <div class="logo"><a href="/">SUPER ETENDART</a></div>
@@ -40,9 +41,12 @@
     </nav>
 
     <script>
+        // Manejo del menú desplegable en celulares
         document.getElementById('hamburger').addEventListener('click', function () {
             document.querySelector('.nav-links').classList.toggle('open');
         });
+
+        // Animación de opacidad al hacer scroll hacia abajo
         window.addEventListener('scroll', function () {
             const navbar = document.querySelector('.navbar');
             if (!navbar) return;

@@ -1,20 +1,19 @@
-
 <!DOCTYPE html>
 <html lang="es">
-    
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Integrantes | SUPER ETENDART</title>
-        <!-- La barra '/' al principio asegura que encuentre tu CSS siempre -->
-        <link rel="stylesheet" href="/main.css">
-        <!-- Font Awesome -->
-        <link href="https://cloudflare.com" rel="stylesheet">
-    </head>
-    
-    <body>
-        <!-- El include de arriba inyecta automáticamente tu <nav> dinámico -->
-            <%- include('partials/nav') %>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integrantes | SUPER ETENDART</title>
+    <!-- La barra '/' al principio asegura que encuentre tu CSS siempre -->
+    <link rel="stylesheet" href="/main.css">
+    <!-- Font Awesome -->
+    <link href="https://cloudflare.com" rel="stylesheet">
+</head>
+
+<body>
+    <!-- El include de arriba inyecta automáticamente tu <nav> dinámico -->
+    <%- include('partials/nav') %>
 
         <section>
             <div class="integrantes-cards">
@@ -71,6 +70,6 @@
                 mediaQueryBio.addEventListener('change', handleResizeBio);
                 window.addEventListener('DOMContentLoaded', () => { if (mediaQueryBio.matches) unwrapBio(); });
             </script>
-    </body>
+</body>
 
-    </html>
+</html>
