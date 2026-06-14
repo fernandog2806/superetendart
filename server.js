@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const { MongoStore } = require('connect-mongo');
@@ -29,12 +30,12 @@ mongoose.connect(MONGO_URI)
 const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_TOKEN || process.env.VERCEL_OIDC_TOKEN;
 const BLOB_STORE_ID = process.env.BLOB_STORE_ID;
 const blobConfigured = Boolean(BLOB_TOKEN || BLOB_STORE_ID);
-const localUploadDir = path.join(__dirname, 'public', 'uploads');
+const localUploadDir = process.env.VERCEL ? path.join(os.tmpdir(), 'uploads') : path.join(__dirname, 'public', 'uploads');
 if (!fs.existsSync(localUploadDir)) {
     fs.mkdirSync(localUploadDir, { recursive: true });
 }
 if (!blobConfigured) {
-    console.warn('⚠️ Vercel Blob no está configurado. Las fotos se guardarán en public/uploads localmente.');
+    console.warn('⚠️ Vercel Blob no está configurado. Las fotos se guardarán localmente en:', localUploadDir);
 }
 
 // Configuración de Sesiones guardadas directamente en MongoDB
@@ -377,6 +378,10 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
-// Encender Servidor
-const PORT = 3000;
-app.listen(PORT, () => console.log(`🚀 Servidor de Super Etendart corriendo en http://localhost:${PORT}`));
+// Encender servidor localmente, pero no en Vercel serverless
+const PORT = process.env.PORT || 3000;
+if (!process.env.VERCEL) {
+    app.listen(PORT, () => console.log(`🚀 Servidor de Super Etendart corriendo en http://localhost:${PORT}`));
+}
+
+module.exports = app;
