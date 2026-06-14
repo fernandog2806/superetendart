@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión | SUPER ETENDART</title>
+    <link rel="stylesheet" href="/main.css">
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .box {
+            background: #0d0d0d;
+            border: 1px solid #1a1a1a;
+            padding: 40px;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+            text-align: center;
+        }
+
+        h2 {
+            color: #ffb703;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background: #141414;
+            border: 1px solid #333;
+            border-radius: 4px;
+            color: #fff;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: #ffb703;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            background: #ffb703;
+            color: #000;
+            border: none;
+            padding: 14px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        p {
+            margin-top: 15px;
+            color: #888;
+            font-size: 14px;
+        }
+
+        p a {
+            color: #ffb703;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Copia esta línea arriba de todo, abajo del body de tus pantallas de login y registro -->
+    <%- include('partials/nav') %>
+
+    <div class="box">
+        <h2>Ingresar</h2>
+        <form action="/login" method="POST">
+            <input type="text" name="username" placeholder="Usuario" required>
+            <input type="password" name="password" placeholder="Contraseña" required>
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+        <p><a href="/forgot" style="color: #ff3040; font-size: 13px;">¿Olvidaste tu contraseña?</a></p>
+        <p>¿No tenés cuenta? <a href="/register">Registrate acá</a></p>
+    </div>
+</body>
+
+</html>

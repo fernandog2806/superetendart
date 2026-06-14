@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrarse | SUPER ETENDART</title>
+    <link rel="stylesheet" href="/main.css">
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px 0;
+        }
+
+        .box {
+            background: #0d0d0d;
+            border: 1px solid #1a1a1a;
+            padding: 40px;
+            border-radius: 8px;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+            text-align: center;
+        }
+
+        h2 {
+            color: #ffb703;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background: #141414;
+            border: 1px solid #333;
+            border-radius: 4px;
+            color: #fff;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: #ffb703;
+            outline: none;
+        }
+
+        .check-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            cursor: pointer;
+            justify-content: center;
+        }
+
+        .check-group input {
+            width: 18px;
+            height: 18px;
+            accent-color: #ffb703;
+            margin: 0;
+        }
+
+        button {
+            width: 100%;
+            background: #ffb703;
+            color: #000;
+            border: none;
+            padding: 14px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        p {
+            margin-top: 20px;
+            color: #888;
+            font-size: 14px;
+        }
+
+        p a {
+            color: #ffb703;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Copia esta línea arriba de todo, abajo del body de tus pantallas de login y registro -->
+    <%- include('partials/nav') %>
+
+    <div class="box">
+        <h2>Crear Cuenta</h2>
+        <form action="/register" method="POST" onsubmit="return validarPasswords()">
+            <div class="row">
+                <input type="text" name="nombre" placeholder="Nombre" required>
+                <input type="text" name="apellido" placeholder="Apellido" required>
+            </div>
+            <input type="text" name="username" placeholder="Nombre de Usuario" required>
+            <input type="email" name="email" placeholder="Correo Electrónico" required>
+            <input type="password" name="password" id="pass" placeholder="Contraseña" required>
+            <input type="password" id="pass2" placeholder="Repetir Contraseña" required>
+
+            <label class="check-group">
+                <input type="checkbox" name="esDueñoCheck" id="esDueñoCheck">
+                <span>Soy músico / dueño de la banda</span>
+            </label>
+
+            <div id="campo-codigo" style="display: none;">
+                <input type="password" name="codigoBanda" placeholder="Código Secreto de la Banda">
+            </div>
+
+            <button type="submit">Registrarme</button>
+        </form>
+        <p>¿Ya tenés cuenta? <a href="/login">Iniciá sesión</a></p>
+    </div>
+
+    <script>
+        document.getElementById('esDueñoCheck').addEventListener('change', function () {
+            document.getElementById('campo-codigo').style.display = this.checked ? 'block' : 'none';
+        });
+
+        function validarPasswords() {
+            const p1 = document.getElementById('pass').value;
+            const p2 = document.getElementById('pass2').value;
+            if (p1 !== p2) {
+                alert("Las contraseñas no coinciden.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+
+</html>

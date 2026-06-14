@@ -198,6 +198,53 @@ a.svg {
     align-items: center;
 }
 
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.user-action-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    color: #f2f2f2;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid transparent;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    font-weight: 600;
+}
+
+.user-action-link:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.18);
+    transform: translateY(-1px);
+}
+
+.user-icon {
+    display: inline-flex;
+    width: 28px;
+    height: 28px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #ffb703;
+    color: #23272b;
+    font-size: 14px;
+}
+
+.logged-in {
+    gap: 10px;
+}
+
+.logout-text {
+    color: #ff3040;
+    font-size: 0.95em;
+}
+
 /* --- Footer --- */
 footer {
     color: #f2f2f2;
@@ -263,13 +310,12 @@ footer {
 .youtube-btn {
     background: #ff0000;
     color: #fff;
+    font-size: 1em;
 }
 
-    .youtube-btn svg {
-        vertical-align: middle;
-        margin-right: 8px;
-    }
-    font-size: 1em;
+.youtube-btn svg {
+    vertical-align: middle;
+    margin-right: 8px;
 }
 
 /* --- Integrantes --- */
@@ -292,9 +338,9 @@ footer {
     align-items: center;
     gap: 16px;
     padding: 24px;
-    max-width: 340px;
-    min-width: 0;
     width: 100%;
+    max-width: 420px;
+    min-height: 460px;
     text-align: center;
     box-sizing: border-box;
 }
@@ -323,22 +369,18 @@ footer {
 }
 
 .integrante-foto {
-    width: 80%;
-    max-width: 120px;
-    min-width: 0;
-    height: auto;
-    aspect-ratio: 1/1;
+    width: 140px;
+    height: 140px;
+    aspect-ratio: 1 / 1;
     border-radius: 50%;
     object-fit: cover;
     box-shadow: 0 2px 8px #0006;
-    margin-bottom: 12px;
     display: block;
 }
 
 .integrante-desc {
-    width: 80%;
-    max-width: 240px;
-    min-width: 120px;
+    width: 100%;
+    max-width: 380px;
     margin-left: auto;
     margin-right: auto;
     text-align: center;

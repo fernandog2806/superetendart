@@ -1,11 +1,5 @@
-<% // Función interna para quitar la barra del final a cualquier dirección si la tiene (ej: /fotos/ -> /fotos)
-    const normalizarUrl = (url) => {
-    if (!url) return '';
-    return url !== '/' && url.endsWith('/') ? url.slice(0, -1) : url;
-    };
-
-    // Filtramos comparando las dos URLs normalizadas sin barras extras al final
-    let menuFiltrado = enlacesNav.filter(enlace => normalizarUrl(enlace.url) !== normalizarUrl(paginaActual));
+<% // Filtra el menú dinámicamente para ocultar el botón de la página en la que estás parado let
+    menuFiltrado=enlacesNav.filter(enlace=> enlace.url !== paginaActual);
     %>
     <nav class="navbar">
         <div class="logo"><a href="/">SUPER ETENDART</a></div>
@@ -15,6 +9,26 @@
                 <% const claseAdicional=enlace.clase ? `class="${enlace.clase}" ` : "" ; %>
                     <li><a href="<%= enlace.url %>" <%- claseAdicional %>><%= enlace.texto %></a></li>
                     <% }) %>
+
+                        <!-- BOTÓN DINÁMICO DE INICIO DE SESIÓN / USUARIO -->
+                        <% if (usuarioLogueado) { %>
+                            <!-- Si ya inició sesión, muestra su nombre y el botón de salir en cualquier página -->
+                            <li class="user-menu" style="display: flex; align-items: center; gap: 10px;">
+                                <span style="color: #ffb703; font-weight: bold;">
+                                    👤 <%= usuarioLogueado.username %>
+                                        <%= usuarioLogueado.rol==='dueño' ? '(Banda)' : '' %>
+                                </span>
+                                <a href="/logout"
+                                    style="color: #ff3040; text-decoration: none; font-size: 14px;">Salir</a>
+                            </li>
+                            <% } else { %>
+                                <!-- Si NO inició sesión, muestra el botón de ingreso, EXCEPTO en las pantallas de login y registro -->
+                                <% if (paginaActual !=='/login' && paginaActual !=='/register' ) { %>
+                                    <li><a href="/login" class="login-link"
+                                            style="color: #ffb703; font-weight: bold;">Iniciar Sesión / Registrarse</a>
+                                    </li>
+                                    <% } %>
+                                        <% } %>
         </ul>
         <div class="social-icons">
             <a href="https://instagram.com" target="_blank" aria-label="Instagram" class="instagram">
@@ -47,12 +61,9 @@
     </nav>
 
     <script>
-        // Manejo del menú desplegable en celulares
         document.getElementById('hamburger').addEventListener('click', function () {
             document.querySelector('.nav-links').classList.toggle('open');
         });
-
-        // Animación de opacidad al hacer scroll hacia abajo
         window.addEventListener('scroll', function () {
             const navbar = document.querySelector('.navbar');
             if (!navbar) return;
