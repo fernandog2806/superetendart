@@ -18,7 +18,7 @@
     <div class="siluetas-container">
         <!-- Recorremos dinámicamente el array de integrantes enviado por el servidor -->
         <% integrantes.forEach(músico=> { %>
-            <div class="silueta-box" tabindex="0" onclick="window.location.href='/historia'" style="cursor: pointer;">
+            <div class="silueta-box" tabindex="0" onclick="window.location.href='/historia'">
                 <img src="/<%= músico.silueta %>" alt="<%= músico.alt %>" class="silueta-img">
                 <div class="silueta-label">
                     <%= músico.nombre %>

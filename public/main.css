@@ -265,14 +265,10 @@ footer {
     color: #fff;
 }
 
-.youtube-btn:hover {
-    background: #c20000;
-    transform: scale(1.05);
-}
-
-.album-desc {
-    margin-top: 0;
-    color: #b2dfdb;
+    .youtube-btn svg {
+        vertical-align: middle;
+        margin-right: 8px;
+    }
     font-size: 1em;
 }
 
@@ -676,78 +672,3 @@ footer {
     }
 }
 
-/* Reemplaza estas clases dentro del <style> de tu fotos.ejs */
-
-body {
-    background-color: #000000;
-    color: #ffffff;
-    margin: 0;
-    padding-top: 120px; /* Evita que la navbar fija tape el feed */
-}
-
-.feed-container {
-    max-width: 1200px; /* Ampliamos el ancho máximo para albergar las 5 columnas */
-    margin: 0 auto;
-    padding: 0 20px 40px 20px;
-    
-    /* ACTIVAMOS EL GRID DINÁMICO */
-    display: grid;
-    /* Define columnas automáticas según el espacio, con un tamaño mínimo de 200px */
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
-    gap: 20px; /* Espaciado tipo grilla entre fotos */
-}
-
-.foto-card {
-    background: #0d0d0d;
-    border: 1px solid #1a1a1a;
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.foto-card img {
-    width: 100%;
-    height: 200px; /* Forzamos una altura fija para que queden simétricas como en IG */
-    object-fit: cover; /* Evita que la imagen se estire o se deforme */
-    display: block;
-}
-
-.foto-foot {
-    padding: 10px 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #080808;
-    border-top: 1px solid #141414;
-}
-
-.btn-reaccion {
-    background: none;
-    border: none;
-    color: #e50914;
-    font-size: 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: bold;
-}
-
-#centinela {
-    height: 60px;
-    width: 100%;
-}
-
-/* MEDIA QUERY: Cuando la pantalla sea chica (Celulares), va a una sola columna estricta */
-@media (max-width: 480px) {
-    .feed-container {
-        grid-template-columns: 1fr;
-        max-width: 400px; /* Achicamos el contenedor para que no quede gigante en celulares */
-    }
-    .foto-card img {
-        height: auto; /* En celular dejamos que mantenga su proporción original hacia abajo */
-    }
-}
