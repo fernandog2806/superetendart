@@ -63,13 +63,20 @@ const listaVideos = [
     { titulo: "SUPER ETENDART - Teledirigidos", idYoutube: "mvT8rdN0KOI" }
 ];
 
-// Middleware para inyectar datos del menú a todas las páginas automáticamente
+// Middleware para inyectar datos del menú limpiando barras diagonales finales
 app.use((req, res, next) => {
     res.locals.enlacesNav = enlacesNav;
-    // Eliminamos la barra final de req.path si existe para mantener limpia la variable paginaActual
-    res.locals.paginaActual = req.path.replace(/\/$/, "");
+
+    // Si la ruta es justo "/" la dejamos igual, si tiene una barra al final (como /fotos/) se la vuela
+    let rutaLimpia = req.path;
+    if (rutaLimpia !== '/' && rutaLimpia.endsWith('/')) {
+        rutaLimpia = rutaLimpia.slice(0, -1);
+    }
+
+    res.locals.paginaActual = rutaLimpia;
     next();
 });
+
 
 // DEFINICIÓN DE RUTAS
 app.get('/', (req, res) => res.render('index', { integrantes }));
