@@ -275,7 +275,15 @@ app.post('/reset/:token', async (req, res) => {
 app.get('/fotos', async (req, res) => {
     try {
         const fotosDb = await Foto.find().sort({ fecha: -1 });
-        res.render('fotos', { fotosDb }); // Pasa el array completo de objetos de la base de datos
+        const urls = fotosDb.map(f => f.url);
+        const esDueño = req.session.usuario && req.session.usuario.rol === 'dueño';
+
+        // Pasamos fotos, rol y explícitamente si hay un usuario logueado
+        res.render('fotos', {
+            fotosDb,
+            rol: esDueño ? 'dueño' : null,
+            usuarioLogueado: req.session.usuario || null
+        });
     } catch (err) {
         res.status(500).send('Error al cargar la galería.');
     }
