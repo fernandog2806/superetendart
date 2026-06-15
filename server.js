@@ -180,8 +180,12 @@ app.post('/register', async (req, res) => {
 
         res.redirect('/login');
     } catch (err) {
-        console.error(err);
-        res.status(500).send('Error en el proceso de registro.');
+        console.error('Error registro usuario:', err);
+        if (err.code === 11000) {
+            return res.status(400).send('El usuario o el correo ya están registrados.');
+        }
+        const mensaje = err.message || 'Error interno en el servidor durante el registro.';
+        res.status(500).send(`Error en el proceso de registro: ${mensaje}`);
     }
 });
 
