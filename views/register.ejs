@@ -99,43 +99,79 @@
 </head>
 
 <body>
-    <!-- Copia esta línea arriba de todo, abajo del body de tus pantallas de login y registro -->
+
+    <!-- Inyectamos tu Navbar total -->
     <%- include('partials/nav') %>
 
-<!-- Reemplaza los inputs de contraseña en views/register.ejs -->
-<div style="position: relative; width: 100%;">
-    <input type="password" name="password" id="pass" placeholder="Contraseña" required style="padding-right: 40px;">
-    <span id="toggle-pass"
-        style="position: absolute; right: 12px; top: 12px; cursor: pointer; font-size: 18px; user-select: none;">👁️</span>
-</div>
+        <div class="box">
+            <h2>Crear Cuenta</h2>
+            <form action="/register" method="POST" onsubmit="return validarFormulario()">
+                <div class="row">
+                    <input type="text" name="nombre" placeholder="Nombre" required>
+                    <input type="text" name="apellido" placeholder="Apellido" required>
+                </div>
+                <input type="text" name="username" placeholder="Nombre de Usuario" required>
+                <input type="email" name="email" placeholder="Correo Electrónico" required>
 
-<div style="position: relative; width: 100%;">
-    <input type="password" id="pass2" placeholder="Repetir Contraseña" required style="padding-right: 40px;">
-    <span id="toggle-pass2"
-        style="position: absolute; right: 12px; top: 12px; cursor: pointer; font-size: 18px; user-select: none;">👁️</span>
-</div>
+                <!-- Contraseña 1 con Ojo -->
+                <div class="password-container">
+                    <input type="password" name="password" id="pass" placeholder="Contraseña" required>
+                    <span id="toggle-pass" class="toggle-eye">👁️</span>
+                </div>
 
-<!-- Agrega esta lógica interactiva dentro de tu etiqueta <script> existente abajo de todo -->
-<script>
-    // Lógica para el primer ojo (Contraseña)
-    const toggle1 = document.getElementById('toggle-pass');
-    const p1 = document.getElementById('pass');
-    toggle1.addEventListener('click', function () {
-        const type = p1.getAttribute('type') === 'password' ? 'text' : 'password';
-        p1.setAttribute('type', type);
-        this.textContent = type === 'password' ? '👁️' : '🙈';
-    });
+                <!-- Contraseña 2 con Ojo -->
+                <div class="password-container">
+                    <input type="password" id="pass2" placeholder="Repetir Contraseña" required>
+                    <span id="toggle-pass2" class="toggle-eye">👁️</span>
+                </div>
 
-    // Lógica para el segundo ojo (Repetir Contraseña)
-    const toggle2 = document.getElementById('toggle-pass2');
-    const p2 = document.getElementById('pass2');
-    toggle2.addEventListener('click', function () {
-        const type = p2.getAttribute('type') === 'password' ? 'text' : 'password';
-        p2.setAttribute('type', type);
-        this.textContent = type === 'password' ? '👁️' : '🙈';
-    });
-</script>
+                <label class="check-group">
+                    <input type="checkbox" name="esDueñoCheck" id="esDueñoCheck">
+                    <span>Soy músico / dueño de la banda</span>
+                </label>
 
+                <div id="campo-codigo" style="display: none;">
+                    <input type="password" name="codigoBanda" placeholder="Código Secreto de la Banda">
+                </div>
+
+                <button type="submit">Registrarme</button>
+            </form>
+            <p>¿Ya tenés cuenta? <a href="/login">Iniciá sesión</a></p>
+        </div>
+
+        <script>
+            // Lógica del Checklist desplegable
+            document.getElementById('esDueñoCheck').addEventListener('change', function () {
+                document.getElementById('campo-codigo').style.display = this.checked ? 'block' : 'none';
+            });
+
+            // Lógica del Ojo 1 (Contraseña)
+            const toggle1 = document.getElementById('toggle-pass');
+            const p1 = document.getElementById('pass');
+            toggle1.addEventListener('click', function () {
+                const type = p1.getAttribute('type') === 'password' ? 'text' : 'password';
+                p1.setAttribute('type', type);
+                this.textContent = type === 'password' ? '👁️' : '🙈';
+            });
+
+            // Lógica del Ojo 2 (Repetir Contraseña)
+            const toggle2 = document.getElementById('toggle-pass2');
+            const p2 = document.getElementById('pass2');
+            toggle2.addEventListener('click', function () {
+                const type = p2.getAttribute('type') === 'password' ? 'text' : 'password';
+                p2.setAttribute('type', type);
+                this.textContent = type === 'password' ? '👁️' : '🙈';
+            });
+
+            // Validación de coincidencia antes de enviar
+            function validarFormulario() {
+                if (p1.value !== p2.value) {
+                    alert("Las contraseñas no coinciden.");
+                    return false;
+                }
+                return true;
+            }
+        </script>
 </body>
 
 </html>
