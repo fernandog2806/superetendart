@@ -38,13 +38,22 @@ if (!blobConfigured) {
     console.warn('⚠️ Vercel Blob no está configurado. Las fotos se guardarán localmente en:', localUploadDir);
 }
 
-// Configuración de Sesiones guardadas directamente en MongoDB
+// CONFIGURACIÓN DE SESIONES OPTIMIZADA PARA LOCALHOST Y VERCEL (SERVERLESS)
 app.use(session({
     secret: 'super-etendart-secret-key-2026',
     resave: false,
     saveUninitialized: false,
-    store: new MongoStore({ mongoUrl: MONGO_URI }),
-    cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 día activo
+    store: MongoStore.create({
+        mongoUrl: MONGO_URI,
+        ttl: 14 * 24 * 60 * 60 // Guarda la sesión en MongoDB Atlas por 14 días para que no se borre
+    }),
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24, // 1 día de duración
+        // Si está en Vercel activa la seguridad de cookies, en localhost no para que puedas probar
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+    },
+    proxy: true // Le dice a Express que confíe en el balanceador de carga de Vercel
 }));
 
 // =============================================================================
