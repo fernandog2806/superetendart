@@ -21,8 +21,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 
-// Conexión obligatoria a MongoDB Atlas o Local
-const MONGO_URI = process.env.MONGO_URL || 'mongodb://localhost:27017/superetendart';
+const isProduction = process.env.NODE_ENV === 'production';
+const MONGO_URI = process.env.MONGO_URL || process.env.MONGODB_URI || process.env.DATABASE_URL || 'mongodb://localhost:27017/superetendart';
+if (!MONGO_URI.includes('localhost') && !process.env.MONGO_URL && !process.env.MONGODB_URI && !process.env.DATABASE_URL && process.env.VERCEL) {
+    console.warn('⚠️ No se encontró variable de conexión MongoDB en Vercel. Define MONGODB_URI o DATABASE_URL.');
+}
 mongoose.connect(MONGO_URI)
     .then(() => console.log('🚀 MongoDB Conectado con Éxito'))
     .catch(err => console.error('Error Mongo:', err));
@@ -39,6 +42,7 @@ if (!blobConfigured) {
 }
 
 // CONFIGURACIÓN DE SESIONES OPTIMIZADA PARA LOCALHOST Y VERCEL (SERVERLESS)
+app.set('trust proxy', 1);
 app.use(session({
     secret: 'super-etendart-secret-key-2026',
     resave: false,
