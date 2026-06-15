@@ -80,16 +80,41 @@
     <!-- Copia esta línea arriba de todo, abajo del body de tus pantallas de login y registro -->
     <%- include('partials/nav') %>
 
-    <div class="box">
-        <h2>Ingresar</h2>
-        <form action="/login" method="POST">
-            <input type="text" name="username" placeholder="Usuario" required>
-            <input type="password" name="password" placeholder="Contraseña" required>
-            <button type="submit">Iniciar Sesión</button>
-        </form>
-        <p><a href="/forgot" style="color: #ff3040; font-size: 13px;">¿Olvidaste tu contraseña?</a></p>
-        <p>¿No tenés cuenta? <a href="/register">Registrate acá</a></p>
-    </div>
+<!-- Reemplaza el bloque del formulario en views/login.ejs -->
+<div class="box">
+    <h2>Ingresar</h2>
+    <form action="/login" method="POST">
+        <input type="text" name="username" placeholder="Usuario" required>
+
+        <!-- Contenedor relativo para posicionar el ojo -->
+        <div style="position: relative; width: 100%;">
+            <input type="password" name="password" id="login-pass" placeholder="Contraseña" required
+                style="padding-right: 40px;">
+            <span id="toggle-login-pass"
+                style="position: absolute; right: 12px; top: 12px; cursor: pointer; font-size: 18px; user-select: none;">👁️</span>
+        </div>
+
+        <button type="submit">Iniciar Sesión</button>
+    </form>
+    <p><a href="/forgot" style="color: #ff3040; font-size: 13px;">¿Olvidaste tu contraseña?</a></p>
+    <p>¿No tenés cuenta? <a href="/register">Registrate acá</a></p>
+</div>
+
+<script>
+    // Lógica interactiva para el ojo de login
+    const togglePass = document.getElementById('toggle-login-pass');
+    const passwordInput = document.getElementById('login-pass');
+
+    togglePass.addEventListener('click', function () {
+        // Alterna el tipo de input entre password y text
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+
+        // Cambia el emoji del ojo para dar feedback visual
+        this.textContent = type === 'password' ? '👁️' : '🙈';
+    });
+</script>
+
 </body>
 
 </html>
