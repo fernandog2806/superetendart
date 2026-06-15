@@ -57,6 +57,39 @@
             outline: none;
         }
 
+        .password-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .password-container input {
+            padding-right: 48px;
+        }
+
+        .toggle-eye {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #ccc;
+            font-size: 1.1em;
+            user-select: none;
+            background: transparent;
+            border: none;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .toggle-eye.eye-hidden {
+            text-decoration: line-through;
+        }
+
+        .toggle-eye:hover {
+            color: #ffb703;
+        }
+
         .check-group {
             display: flex;
             align-items: center;
@@ -116,13 +149,13 @@
                 <!-- Contraseña 1 con Ojo -->
                 <div class="password-container">
                     <input type="password" name="password" id="pass" placeholder="Contraseña" required>
-                    <span id="toggle-pass" class="toggle-eye">👁️</span>
+                    <span id="toggle-pass" class="toggle-eye eye-hidden">👁️</span>
                 </div>
 
                 <!-- Contraseña 2 con Ojo -->
                 <div class="password-container">
                     <input type="password" id="pass2" placeholder="Repetir Contraseña" required>
-                    <span id="toggle-pass2" class="toggle-eye">👁️</span>
+                    <span id="toggle-pass2" class="toggle-eye eye-hidden">👁️</span>
                 </div>
 
                 <label class="check-group">
@@ -151,7 +184,7 @@
             toggle1.addEventListener('click', function () {
                 const type = p1.getAttribute('type') === 'password' ? 'text' : 'password';
                 p1.setAttribute('type', type);
-                this.textContent = type === 'password' ? '👁️' : '🙈';
+                this.classList.toggle('eye-hidden', type === 'password');
             });
 
             // Lógica del Ojo 2 (Repetir Contraseña)
@@ -160,7 +193,7 @@
             toggle2.addEventListener('click', function () {
                 const type = p2.getAttribute('type') === 'password' ? 'text' : 'password';
                 p2.setAttribute('type', type);
-                this.textContent = type === 'password' ? '👁️' : '🙈';
+                this.classList.toggle('eye-hidden', type === 'password');
             });
 
             // Validación de coincidencia antes de enviar

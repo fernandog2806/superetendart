@@ -51,6 +51,39 @@
             outline: none;
         }
 
+        .password-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .password-container input {
+            padding-right: 48px;
+        }
+
+        .toggle-eye {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #ccc;
+            font-size: 1.1em;
+            user-select: none;
+            background: transparent;
+            border: none;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .toggle-eye.eye-hidden {
+            text-decoration: line-through;
+        }
+
+        .toggle-eye:hover {
+            color: #ffb703;
+        }
+
         button {
             width: 100%;
             background: #ffb703;
@@ -89,7 +122,7 @@
                 <!-- Campo de clave con ojo integrado -->
                 <div class="password-container">
                     <input type="password" name="password" id="login-pass" placeholder="Contraseña" required>
-                    <span id="toggle-login-pass" class="toggle-eye">👁️</span>
+                    <span id="toggle-login-pass" class="toggle-eye eye-hidden">👁️</span>
                 </div>
 
                 <button type="submit">Iniciar Sesión</button>
@@ -106,7 +139,7 @@
             toggleLoginPass.addEventListener('click', function () {
                 const type = loginPassInput.getAttribute('type') === 'password' ? 'text' : 'password';
                 loginPassInput.setAttribute('type', type);
-                this.textContent = type === 'password' ? '👁️' : '🙈';
+                this.classList.toggle('eye-hidden', type === 'password');
             });
         </script>
 </body>
