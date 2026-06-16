@@ -14,33 +14,38 @@ const { Usuario, Foto } = require('./models');
 const app = express();
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const isProduction = NODE_ENV === 'production';
+const isVercel = Boolean(process.env.VERCEL);
 const PORT = process.env.PORT || 3000;
 const SESSION_SECRET = process.env.SESSION_SECRET || 'super-etendart-secret-key-2026';
 
-const MONGO_URI = process.env.MONGO_URL || process.env.MONGODB_URI || process.env.DATABASE_URL || 'mongodb://localhost:27017/superetendart';
+const MONGO_URI = process.env.MONGODB_URI || 'mongodb+srv://fernandogonzalez_db_user:bAcFldStAaMqYCem@cluster0.fibjflb.mongodb.net/superetendart?retryWrites=true&w=majority&appName=Cluster0';
 const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_TOKEN || process.env.VERCEL_OIDC_TOKEN;
 const BLOB_STORE_ID = process.env.BLOB_STORE_ID;
 const EMAIL_USER = process.env.EMAIL_USER;
 const EMAIL_PASS = process.env.EMAIL_PASS;
 
-const blobConfigured = Boolean(BLOB_TOKEN || BLOB_STORE_ID);
+const blobConfigured = Boolean(BLOB_TOKEN && BLOB_STORE_ID);
 const mailConfigured = Boolean(EMAIL_USER && EMAIL_PASS);
-const localUploadDir = process.env.VERCEL ? path.join(os.tmpdir(), 'uploads') : path.join(__dirname, 'public', 'uploads');
+const localUploadDir = isVercel ? null : path.join(__dirname, 'public', 'uploads');
 
-if (process.env.VERCEL && !process.env.MONGO_URL && !process.env.MONGODB_URI && !process.env.DATABASE_URL) {
-    console.warn('⚠️ No se encontró variable de conexión MongoDB en Vercel. Define MONGODB_URI o DATABASE_URL.');
+if (!process.env.MONGODB_URI) {
+    console.warn('⚠️ Usando URI de MongoDB de respaldo en el código. Es recomendable configurar MONGODB_URI en tu entorno de Vercel.');
+}
+
+if (isVercel && !blobConfigured) {
+    console.warn('⚠️ Vercel no permite servir archivos locales de forma persistente. Configura Vercel Blob o usa otro almacenamiento externo para poder mostrar fotos.');
 }
 
 mongoose.connect(MONGO_URI)
     .then(() => console.log('🚀 MongoDB conectado con éxito'))
     .catch((err) => console.error('Error Mongo:', err));
 
-if (!fs.existsSync(localUploadDir)) {
+if (!isVercel && localUploadDir && !fs.existsSync(localUploadDir)) {
     fs.mkdirSync(localUploadDir, { recursive: true });
 }
 
 if (!blobConfigured) {
-    console.warn('⚠️ Vercel Blob no está configurado. Las fotos se guardarán localmente en:', localUploadDir);
+    console.warn('⚠️ Vercel Blob no está configurado. Las fotos se guardarán localmente en:', localUploadDir || 'no disponible en Vercel');
 }
 
 const transporter = nodemailer.createTransport({
@@ -296,6 +301,10 @@ app.post('/subir-foto', upload.single('archivoFoto'), async (req, res) => {
     }
     if (!req.file) return res.redirect('/fotos');
 
+    if (isVercel && !blobConfigured) {
+        return res.status(500).send('No es posible subir imágenes en Vercel sin configurar Vercel Blob o un almacenamiento externo.');
+    }
+
     try {
         // Algoritmo inteligente para cuidar el espacio gratuito (Capa gratis: máximo 1000 fotos)
         const totalFotos = await Foto.countDocuments();
@@ -304,11 +313,9 @@ app.post('/subir-foto', upload.single('archivoFoto'), async (req, res) => {
             if (fotoVieja) {
                 if (blobConfigured && !fotoVieja.url.startsWith('/uploads/')) {
                     await del(fotoVieja.url);
-                } else {
+                } else if (!isVercel && localUploadDir) {
                     const localFile = path.join(localUploadDir, path.basename(fotoVieja.url));
-                    if (fs.existsSync(localFile)) {
-                        fs.unlinkSync(localFile);
-                    }
+                    if (fs.existsSync(localFile)) fs.unlinkSync(localFile);
                 }
                 await Foto.deleteOne({ _id: fotoVieja._id });
             }
@@ -378,9 +385,11 @@ app.post('/borrar-foto', async (req, res) => {
         if (!foto) return res.status(404).send('No encontrada.');
 
         if (!blobConfigured || foto.url.startsWith('/uploads/')) {
-            const localFile = path.join(__dirname, 'public', foto.url.replace(/^\//, ''));
-            if (fs.existsSync(localFile)) {
-                fs.unlinkSync(localFile);
+            if (!isVercel && localUploadDir) {
+                const localFile = path.join(__dirname, 'public', foto.url.replace(/^\//, ''));
+                if (fs.existsSync(localFile)) {
+                    fs.unlinkSync(localFile);
+                }
             }
         } else {
             await del(foto.url, {
