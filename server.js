@@ -1,4 +1,5 @@
 const express = require('express');
+const app = express();
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
@@ -11,42 +12,53 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const { Usuario, Foto } = require('./models');
 
-const app = express();
-const NODE_ENV = process.env.NODE_ENV || 'development';
-const isProduction = NODE_ENV === 'production';
-const isVercel = Boolean(process.env.VERCEL);
-const PORT = process.env.PORT || 3000;
-const SESSION_SECRET = process.env.SESSION_SECRET || 'super-etendart-secret-key-2026';
+// CONFIGURACIÓN CLAVE: Evita el error de la barra final (Cannot GET /fotos/)
+app.set('strict routing', false);
 
-const MONGO_URI = process.env.MONGODB_URI || 'mongodb+srv://fernandogonzalez_db_user:bAcFldStAaMqYCem@cluster0.fibjflb.mongodb.net/superetendart?retryWrites=true&w=majority&appName=Cluster0';
-const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_TOKEN || process.env.VERCEL_OIDC_TOKEN;
-const BLOB_STORE_ID = process.env.BLOB_STORE_ID;
-const EMAIL_USER = process.env.EMAIL_USER;
-const EMAIL_PASS = process.env.EMAIL_PASS;
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
-const blobConfigured = Boolean(BLOB_TOKEN && BLOB_STORE_ID);
-const mailConfigured = Boolean(EMAIL_USER && EMAIL_PASS);
-const localUploadDir = isVercel ? null : path.join(__dirname, 'public', 'uploads');
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
 
-if (!process.env.MONGODB_URI) {
-    console.warn('⚠️ Usando URI de MongoDB de respaldo en el código. Es recomendable configurar MONGODB_URI en tu entorno de Vercel.');
-}
 
-if (isVercel && !blobConfigured) {
-    console.warn('⚠️ Vercel no permite servir archivos locales de forma persistente. Configura Vercel Blob o usa otro almacenamiento externo para poder mostrar fotos.');
-}
+// CADENA DE CONEXIÓN DINÁMICA (Si estás en tu PC, usa tu base local fija; en internet lee Vercel)
+const MONGO_URI = process.env.MONGO_URL || 'mongodb://localhost:27017/superetendart';
 
 mongoose.connect(MONGO_URI)
-    .then(() => console.log('🚀 MongoDB conectado con éxito'))
-    .catch((err) => console.error('Error Mongo:', err));
+    .then(() => console.log('🚀 MongoDB Conectado con Éxito'))
+    .catch(err => console.error('⚠️ Error al conectar MongoDB:', err));
 
-if (!isVercel && localUploadDir && !fs.existsSync(localUploadDir)) {
+
+const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_TOKEN || process.env.VERCEL_OIDC_TOKEN;
+const BLOB_STORE_ID = process.env.BLOB_STORE_ID;
+const blobConfigured = Boolean(BLOB_TOKEN || BLOB_STORE_ID);
+const localUploadDir = process.env.VERCEL ? path.join(os.tmpdir(), 'uploads') : path.join(__dirname, 'public', 'uploads');
+if (!fs.existsSync(localUploadDir)) {
     fs.mkdirSync(localUploadDir, { recursive: true });
 }
-
 if (!blobConfigured) {
-    console.warn('⚠️ Vercel Blob no está configurado. Las fotos se guardarán localmente en:', localUploadDir || 'no disponible en Vercel');
+    console.warn('⚠️ Vercel Blob no está configurado. Las fotos se guardarán localmente en:', localUploadDir);
 }
+
+// Configuración de Sesiones guardadas directamente en MongoDB
+app.use(session({
+    secret: 'super-etendart-secret-key-2026',
+    resave: false,
+    saveUninitialized: false,
+    store: new MongoStore({ mongoUrl: MONGO_URI }),
+    cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 día activo
+}));
+
+// =============================================================================
+// 🔑 TU CÓDIGO FIJO MAESTRO (El que le pasás a los integrantes de la banda)
+// =============================================================================
+const CODIGO_SECRETO_BANDA = "ETENDART_BANDA_2026";
+
+// CONFIGURACIÓN DE NODEMAILER (Para envío de correos reales)
+const EMAIL_USER = process.env.EMAIL_USER;
+const EMAIL_PASS = process.env.EMAIL_PASS;
+const mailConfigured = Boolean(EMAIL_USER && EMAIL_PASS);
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
@@ -61,7 +73,7 @@ const transporter = nodemailer.createTransport({
 if (!mailConfigured) {
     console.warn('⚠️ EMAIL_USER y/o EMAIL_PASS no están definidos. No se enviarán correos.');
 } else {
-    transporter.verify((error) => {
+    transporter.verify((error, success) => {
         if (error) {
             console.error('⚠️ Error al verificar nodemailer:', error);
         } else {
@@ -69,34 +81,6 @@ if (!mailConfigured) {
         }
     });
 }
-
-app.set('strict routing', false);
-app.set('trust proxy', 1);
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.urlencoded({ extended: true }));
-app.use(session({
-    secret: SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-        mongoUrl: MONGO_URI,
-        ttl: 14 * 24 * 60 * 60
-    }),
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24,
-        secure: isProduction,
-        sameSite: isProduction ? 'none' : 'lax'
-    },
-    proxy: true
-}));
-
-// =============================================================================
-// 🔑 TU CÓDIGO FIJO MAESTRO (El que le pasás a los integrantes de la banda)
-// =============================================================================
-const CODIGO_SECRETO_BANDA = 'ETENDART_BANDA_2026';
 
 const enlacesNav = [
     { texto: "Historia", url: "/historia", clase: "" },
@@ -186,12 +170,8 @@ app.post('/register', async (req, res) => {
 
         res.redirect('/login');
     } catch (err) {
-        console.error('Error registro usuario:', err);
-        if (err.code === 11000) {
-            return res.status(400).send('El usuario o el correo ya están registrados.');
-        }
-        const mensaje = err.message || 'Error interno en el servidor durante el registro.';
-        res.status(500).send(`Error en el proceso de registro: ${mensaje}`);
+        console.error(err);
+        res.status(500).send('Error en el proceso de registro.');
     }
 });
 
@@ -280,15 +260,7 @@ app.post('/reset/:token', async (req, res) => {
 app.get('/fotos', async (req, res) => {
     try {
         const fotosDb = await Foto.find().sort({ fecha: -1 });
-        const urls = fotosDb.map(f => f.url);
-        const esDueño = req.session.usuario && req.session.usuario.rol === 'dueño';
-
-        // Pasamos fotos, rol y explícitamente si hay un usuario logueado
-        res.render('fotos', {
-            fotosDb,
-            rol: esDueño ? 'dueño' : null,
-            usuarioLogueado: req.session.usuario || null
-        });
+        res.render('fotos', { fotosDb }); // Pasa el array completo de objetos de la base de datos
     } catch (err) {
         res.status(500).send('Error al cargar la galería.');
     }
@@ -301,10 +273,6 @@ app.post('/subir-foto', upload.single('archivoFoto'), async (req, res) => {
     }
     if (!req.file) return res.redirect('/fotos');
 
-    if (isVercel && !blobConfigured) {
-        return res.status(500).send('No es posible subir imágenes en Vercel sin configurar Vercel Blob o un almacenamiento externo.');
-    }
-
     try {
         // Algoritmo inteligente para cuidar el espacio gratuito (Capa gratis: máximo 1000 fotos)
         const totalFotos = await Foto.countDocuments();
@@ -313,9 +281,11 @@ app.post('/subir-foto', upload.single('archivoFoto'), async (req, res) => {
             if (fotoVieja) {
                 if (blobConfigured && !fotoVieja.url.startsWith('/uploads/')) {
                     await del(fotoVieja.url);
-                } else if (!isVercel && localUploadDir) {
+                } else {
                     const localFile = path.join(localUploadDir, path.basename(fotoVieja.url));
-                    if (fs.existsSync(localFile)) fs.unlinkSync(localFile);
+                    if (fs.existsSync(localFile)) {
+                        fs.unlinkSync(localFile);
+                    }
                 }
                 await Foto.deleteOne({ _id: fotoVieja._id });
             }
@@ -385,11 +355,9 @@ app.post('/borrar-foto', async (req, res) => {
         if (!foto) return res.status(404).send('No encontrada.');
 
         if (!blobConfigured || foto.url.startsWith('/uploads/')) {
-            if (!isVercel && localUploadDir) {
-                const localFile = path.join(__dirname, 'public', foto.url.replace(/^\//, ''));
-                if (fs.existsSync(localFile)) {
-                    fs.unlinkSync(localFile);
-                }
+            const localFile = path.join(__dirname, 'public', foto.url.replace(/^\//, ''));
+            if (fs.existsSync(localFile)) {
+                fs.unlinkSync(localFile);
             }
         } else {
             await del(foto.url, {
@@ -414,6 +382,7 @@ app.get('/logout', (req, res) => {
 });
 
 // Encender servidor localmente, pero no en Vercel serverless
+const PORT = process.env.PORT || 3000;
 if (!process.env.VERCEL) {
     app.listen(PORT, () => console.log(`🚀 Servidor de Super Etendart corriendo en http://localhost:${PORT}`));
 }

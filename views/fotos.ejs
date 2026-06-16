@@ -143,61 +143,54 @@
                 </div>
 
                 <!-- INTERACTIVIDAD CON EL BACKEND (FETCH API) -->
-<!-- REEMPLAZA LOS SCRIPTS DE ABAJO DE TODO EN views/fotos.ejs POR ESTE BLOQUE LIMPIO -->
-<script>
-    // Lógica asíncrona para dar/quitar Me Gusta en tiempo real
-    async function alternarLike(fotoId) {
+                <script>
+                    // Lógica asíncrona para dar/quitar Me Gusta en tiempo real sin recargar la página
+                    async function alternarLike(fotoId) {
+            <% if (!usuarioLogueado) { %>
+                            alert("Tenés que iniciar sesión para poder darle Me Gusta a las fotos.");
+                            window.location.href = "/login";
+                            return;
+            <% } %>
 
-        // CORRECCIÓN CLAVE: Usamos EJS solo para inyectar un booleano verdadero/falso en el navegador
-        const estaLogueado = <% - usuarioLogueado ? 'true' : 'false' %>;
+            try {
+                            const response = await fetch(`/fotos/${fotoId}/like`, { method: 'POST' });
+                            const resultado = await response.json();
 
-        // Si el JavaScript del navegador detecta que no inició sesión, frena el código y tira tu cartel
-        if (!estaLogueado) {
-            alert("Iniciá sesión para reaccionar a las fotos de la banda! 🎸");
-            window.location.href = "/login";
-            return; // Frena la ejecución para que no intente mandar el fetch a la base de datos
-        }
+                            if (response.ok) {
+                                const boton = document.querySelector(`#card-${fotoId} .btn-reaccion`);
+                                const contador = boton.querySelector('span');
 
-        try {
-            const response = await fetch(`/fotos/${fotoId}/like`, { method: 'POST' });
-            const resultado = await response.json();
+                                contador.innerText = resultado.totalLikes;
+                                boton.classList.toggle('liked', resultado.yaDioLike);
+                            } else {
+                                alert(resultado.error || "Error al procesar la reacción.");
+                            }
+                        } catch (err) {
+                            console.error(err);
+                        }
+                    }
 
-            if (response.ok) {
-                const boton = document.querySelector(`#card-${fotoId} .btn-reaccion`);
-                const contador = boton.querySelector('span');
+                    // Lógica asíncrona para eliminar fotos desde la grilla
+                    async function borrarFoto(fotoId) {
+                        if (!confirm("¿Estás seguro de que querés eliminar esta foto permanentemente?")) return;
 
-                contador.innerText = resultado.totalLikes;
-                boton.classList.toggle('liked', resultado.yaDioLike);
-            } else {
-                alert(resultado.error || "Error al procesar la reacción.");
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    }
+                        try {
+                            const response = await fetch('/borrar-foto', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                body: `id=${fotoId}`
+                            });
 
-    // Lógica asíncrona para eliminar fotos desde la grilla (Exclusivo Banda)
-    async function borrarFoto(fotoId) {
-        if (!confirm("¿Estás seguro de que querés eliminar esta foto permanentemente?")) return;
-
-        try {
-            const response = await fetch('/borrar-foto', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `id=${fotoId}`
-            });
-
-            if (response.ok) {
-                document.getElementById(`card-${fotoId}`).remove();
-            } else {
-                alert("No se pudo eliminar la imagen.");
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    }
-</script>
-
+                            if (response.ok) {
+                                document.getElementById(`card-${fotoId}`).remove();
+                            } else {
+                                alert("No se pudo eliminar la imagen.");
+                            }
+                        } catch (err) {
+                            console.error(err);
+                        }
+                    }
+                </script>
 </body>
 
 </html>

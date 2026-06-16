@@ -51,39 +51,6 @@
             outline: none;
         }
 
-        .password-container {
-            position: relative;
-            width: 100%;
-            margin-bottom: 20px;
-        }
-
-        .password-container input {
-            padding-right: 48px;
-        }
-
-        .toggle-eye {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #ccc;
-            font-size: 1.1em;
-            user-select: none;
-            background: transparent;
-            border: none;
-            padding: 0;
-            line-height: 1;
-        }
-
-        .toggle-eye.eye-hidden {
-            text-decoration: line-through;
-        }
-
-        .toggle-eye:hover {
-            color: #ffb703;
-        }
-
         button {
             width: 100%;
             background: #ffb703;
@@ -110,38 +77,19 @@
 </head>
 
 <body>
-
-    <!-- Inyectamos tu Navbar total -->
+    <!-- Copia esta línea arriba de todo, abajo del body de tus pantallas de login y registro -->
     <%- include('partials/nav') %>
 
-        <div class="box">
-            <h2>Ingresar</h2>
-            <form action="/login" method="POST">
-                <input type="text" name="username" placeholder="Usuario" required>
-
-                <!-- Campo de clave con ojo integrado -->
-                <div class="password-container">
-                    <input type="password" name="password" id="login-pass" placeholder="Contraseña" required>
-                    <span id="toggle-login-pass" class="toggle-eye eye-hidden">👁️</span>
-                </div>
-
-                <button type="submit">Iniciar Sesión</button>
-            </form>
-            <p><a href="/forgot" style="color: #ff3040; font-size: 13px;">¿Olvidaste tu contraseña?</a></p>
-            <p>¿No tenés cuenta? <a href="/register">Registrate acá</a></p>
-        </div>
-
-        <script>
-            // Lógica interactiva para revelar la contraseña en el Login
-            const toggleLoginPass = document.getElementById('toggle-login-pass');
-            const loginPassInput = document.getElementById('login-pass');
-
-            toggleLoginPass.addEventListener('click', function () {
-                const type = loginPassInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                loginPassInput.setAttribute('type', type);
-                this.classList.toggle('eye-hidden', type === 'password');
-            });
-        </script>
+    <div class="box">
+        <h2>Ingresar</h2>
+        <form action="/login" method="POST">
+            <input type="text" name="username" placeholder="Usuario" required>
+            <input type="password" name="password" placeholder="Contraseña" required>
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+        <p><a href="/forgot" style="color: #ff3040; font-size: 13px;">¿Olvidaste tu contraseña?</a></p>
+        <p>¿No tenés cuenta? <a href="/register">Registrate acá</a></p>
+    </div>
 </body>
 
 </html>

@@ -46,39 +46,6 @@
             box-sizing: border-box;
         }
 
-        .password-container {
-            position: relative;
-            width: 100%;
-            margin-bottom: 20px;
-        }
-
-        .password-container input {
-            padding-right: 48px;
-        }
-
-        .toggle-eye {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #ccc;
-            font-size: 1.1em;
-            user-select: none;
-            background: transparent;
-            border: none;
-            padding: 0;
-            line-height: 1;
-        }
-
-        .toggle-eye.eye-hidden {
-            text-decoration: line-through;
-        }
-
-        .toggle-eye:hover {
-            color: #ffb703;
-        }
-
         button {
             width: 100%;
             background: #ffb703;
@@ -96,37 +63,14 @@
     <div class="box">
         <h2>Nueva Contraseña</h2>
         <form action="/reset/<%= token %>" method="POST" onsubmit="return validarPasswords()">
-            <div class="password-container">
-                <input type="password" name="password" id="pass" placeholder="Nueva Contraseña" required>
-                <span id="toggle-pass" class="toggle-eye eye-hidden">👁️</span>
-            </div>
-            <div class="password-container">
-                <input type="password" id="pass2" placeholder="Repetir Nueva Contraseña" required>
-                <span id="toggle-pass2" class="toggle-eye eye-hidden">👁️</span>
-            </div>
+            <input type="password" name="password" id="pass" placeholder="Nueva Contraseña" required>
+            <input type="password" id="pass2" placeholder="Repetir Nueva Contraseña" required>
             <button type="submit">Actualizar Contraseña</button>
         </form>
     </div>
     <script>
-        const togglePass = document.getElementById('toggle-pass');
-        const passInput = document.getElementById('pass');
-        const togglePass2 = document.getElementById('toggle-pass2');
-        const pass2Input = document.getElementById('pass2');
-
-        togglePass.addEventListener('click', function () {
-            const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passInput.setAttribute('type', type);
-            this.classList.toggle('eye-hidden', type === 'password');
-        });
-
-        togglePass2.addEventListener('click', function () {
-            const type = pass2Input.getAttribute('type') === 'password' ? 'text' : 'password';
-            pass2Input.setAttribute('type', type);
-            this.classList.toggle('eye-hidden', type === 'password');
-        });
-
         function validarPasswords() {
-            if (passInput.value !== pass2Input.value) {
+            if (document.getElementById('pass').value !== document.getElementById('pass2').value) {
                 alert("Las contraseñas no coinciden.");
                 return false;
             }

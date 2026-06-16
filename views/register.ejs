@@ -57,39 +57,6 @@
             outline: none;
         }
 
-        .password-container {
-            position: relative;
-            width: 100%;
-            margin-bottom: 20px;
-        }
-
-        .password-container input {
-            padding-right: 48px;
-        }
-
-        .toggle-eye {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #ccc;
-            font-size: 1.1em;
-            user-select: none;
-            background: transparent;
-            border: none;
-            padding: 0;
-            line-height: 1;
-        }
-
-        .toggle-eye.eye-hidden {
-            text-decoration: line-through;
-        }
-
-        .toggle-eye:hover {
-            color: #ffb703;
-        }
-
         .check-group {
             display: flex;
             align-items: center;
@@ -132,79 +99,50 @@
 </head>
 
 <body>
-
-    <!-- Inyectamos tu Navbar total -->
+    <!-- Copia esta línea arriba de todo, abajo del body de tus pantallas de login y registro -->
     <%- include('partials/nav') %>
 
-        <div class="box">
-            <h2>Crear Cuenta</h2>
-            <form action="/register" method="POST" onsubmit="return validarFormulario()">
-                <div class="row">
-                    <input type="text" name="nombre" placeholder="Nombre" required>
-                    <input type="text" name="apellido" placeholder="Apellido" required>
-                </div>
-                <input type="text" name="username" placeholder="Nombre de Usuario" required>
-                <input type="email" name="email" placeholder="Correo Electrónico" required>
+    <div class="box">
+        <h2>Crear Cuenta</h2>
+        <form action="/register" method="POST" onsubmit="return validarPasswords()">
+            <div class="row">
+                <input type="text" name="nombre" placeholder="Nombre" required>
+                <input type="text" name="apellido" placeholder="Apellido" required>
+            </div>
+            <input type="text" name="username" placeholder="Nombre de Usuario" required>
+            <input type="email" name="email" placeholder="Correo Electrónico" required>
+            <input type="password" name="password" id="pass" placeholder="Contraseña" required>
+            <input type="password" id="pass2" placeholder="Repetir Contraseña" required>
 
-                <!-- Contraseña 1 con Ojo -->
-                <div class="password-container">
-                    <input type="password" name="password" id="pass" placeholder="Contraseña" required>
-                    <span id="toggle-pass" class="toggle-eye eye-hidden">👁️</span>
-                </div>
+            <label class="check-group">
+                <input type="checkbox" name="esDueñoCheck" id="esDueñoCheck">
+                <span>Soy músico / dueño de la banda</span>
+            </label>
 
-                <!-- Contraseña 2 con Ojo -->
-                <div class="password-container">
-                    <input type="password" id="pass2" placeholder="Repetir Contraseña" required>
-                    <span id="toggle-pass2" class="toggle-eye eye-hidden">👁️</span>
-                </div>
+            <div id="campo-codigo" style="display: none;">
+                <input type="password" name="codigoBanda" placeholder="Código Secreto de la Banda">
+            </div>
 
-                <label class="check-group">
-                    <input type="checkbox" name="esDueñoCheck" id="esDueñoCheck">
-                    <span>Soy músico / dueño de la banda</span>
-                </label>
+            <button type="submit">Registrarme</button>
+        </form>
+        <p>¿Ya tenés cuenta? <a href="/login">Iniciá sesión</a></p>
+    </div>
 
-                <div id="campo-codigo" style="display: none;">
-                    <input type="password" name="codigoBanda" placeholder="Código Secreto de la Banda">
-                </div>
+    <script>
+        document.getElementById('esDueñoCheck').addEventListener('change', function () {
+            document.getElementById('campo-codigo').style.display = this.checked ? 'block' : 'none';
+        });
 
-                <button type="submit">Registrarme</button>
-            </form>
-            <p>¿Ya tenés cuenta? <a href="/login">Iniciá sesión</a></p>
-        </div>
-
-        <script>
-            // Lógica del Checklist desplegable
-            document.getElementById('esDueñoCheck').addEventListener('change', function () {
-                document.getElementById('campo-codigo').style.display = this.checked ? 'block' : 'none';
-            });
-
-            // Lógica del Ojo 1 (Contraseña)
-            const toggle1 = document.getElementById('toggle-pass');
-            const p1 = document.getElementById('pass');
-            toggle1.addEventListener('click', function () {
-                const type = p1.getAttribute('type') === 'password' ? 'text' : 'password';
-                p1.setAttribute('type', type);
-                this.classList.toggle('eye-hidden', type === 'password');
-            });
-
-            // Lógica del Ojo 2 (Repetir Contraseña)
-            const toggle2 = document.getElementById('toggle-pass2');
-            const p2 = document.getElementById('pass2');
-            toggle2.addEventListener('click', function () {
-                const type = p2.getAttribute('type') === 'password' ? 'text' : 'password';
-                p2.setAttribute('type', type);
-                this.classList.toggle('eye-hidden', type === 'password');
-            });
-
-            // Validación de coincidencia antes de enviar
-            function validarFormulario() {
-                if (p1.value !== p2.value) {
-                    alert("Las contraseñas no coinciden.");
-                    return false;
-                }
-                return true;
+        function validarPasswords() {
+            const p1 = document.getElementById('pass').value;
+            const p2 = document.getElementById('pass2').value;
+            if (p1 !== p2) {
+                alert("Las contraseñas no coinciden.");
+                return false;
             }
-        </script>
+            return true;
+        }
+    </script>
 </body>
 
 </html>
