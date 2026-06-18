@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -60,27 +61,32 @@ const EMAIL_USER = process.env.EMAIL_USER;
 const EMAIL_PASS = process.env.EMAIL_PASS;
 const mailConfigured = Boolean(EMAIL_USER && EMAIL_PASS);
 
+// =============================================================================
+// 📧 CONFIGURACIÓN MAESTRA DE CORREO (GMAIL)
+// =============================================================================
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
+    service: 'gmail',
     auth: {
-        user: EMAIL_USER,
-        pass: EMAIL_PASS
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     }
 });
 
-if (!mailConfigured) {
+
+// Verificación automática del canal de correos al arrancar
+const tieneClavesMail = process.env.EMAIL_USER || 'fernandogonzalez28061991@gmail.com';
+if (!tieneClavesMail) {
     console.warn('⚠️ EMAIL_USER y/o EMAIL_PASS no están definidos. No se enviarán correos.');
 } else {
     transporter.verify((error, success) => {
         if (error) {
-            console.error('⚠️ Error al verificar nodemailer:', error);
+            console.error('⚠️ Error al conectar con el servidor de correos:', error.message);
         } else {
-            console.log('✅ Servicio de correo listo para enviar mensajes.');
+            console.log('✅ ¡Servicio de correo de SUPERETENDART listo y conectado!');
         }
     });
 }
+
 
 const enlacesNav = [
     { texto: "Historia", url: "/historia", clase: "" },
