@@ -64,23 +64,24 @@ if (!blobConfigured) {
     console.warn('⚠️ Vercel Blob no está configurado. Las fotos se guardarán localmente en:', localUploadDir);
 }
 
-// Configuración de Sesiones guardadas directamente en MongoDB
+// 1. Esto arriba de la sesión (OBLIGATORIO para Vercel)
 app.set('trust proxy', 1);
 
+// 2. Reemplazá tu configuración de session por esta:
 app.use(session({
     secret: 'super-etendart-secret-key-2026',
-    resave: true,
-    saveUninitialized: true, // 🚀 CAMBIO: Obliga a inicializar una sesión vacía para asegurar que la cookie se cree
-    proxy: true,
+    resave: false,               // En producción es mejor false con connect-mongo
+    saveUninitialized: false,    // No guardamos sesiones vacías
+    proxy: true,                 // Le avisa a express-session que confíe en Vercel
     store: MongoStore.create({
         mongoUrl: "mongodb+srv://fernandogonzalez_db_user:superetendart@cluster0.e6ufwoz.mongodb.net/superetendart?retryWrites=true&w=majority"
     }),
     cookie: {
-        secure: false, // 🚀 CAMBIO: Al ponerlo en false, evitamos que las funciones lambda de Vercel bloqueen el guardado de la cookie por problemas de certificados
-        maxAge: 24 * 60 * 60 * 1000
+        secure: true,            // 🚀 CAMBIO CLAVE: SÍ o SÍ true porque Vercel corre en HTTPS
+        sameSite: 'lax',         // 🚀 CAMBIO CLAVE: Lax permite mantener la cookie navegando tu web
+        maxAge: 24 * 60 * 60 * 1000 // 1 día de duración
     }
 }));
-
 
 // =============================================================================
 // 🔑 TU CÓDIGO FIJO MAESTRO (El que le pasás a los integrantes de la banda)
@@ -462,6 +463,13 @@ app.post('/borrar-foto', async (req, res) => {
     }
 });
 
+app.get('/', (req, res) => {
+    // Verificamos si existe el ID del usuario en la sesión
+    const usuarioLogueado = req.session.userId || null;
+
+    // Le pasamos el usuario a la vista index.ejs
+    res.render('index', { usuario: usuarioLogueado });
+});
 
 // Cerrar Sesión
 app.get('/logout', (req, res) => {
