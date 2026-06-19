@@ -69,6 +69,15 @@
     <div class="box">
         <h2>Recuperar Clave</h2>
         <p>Ingresá tu mail y te enviaremos un link para cambiar tu contraseña sin necesidad de poner la vieja.</p>
+
+        <!-- 🔴 Cartel de Error si el correo no existe -->
+        <% if (locals.error) { %>
+            <div class="alerta-error"
+                style="color: #ff4a4a; background: #2a1515; padding: 12px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ff0000; font-size: 14px; text-align: center;">
+                ⚠️ <%= error %>
+            </div>
+            <% } %>
+
         <form action="/forgot" method="POST">
             <input type="email" name="email" placeholder="Tu Correo Electrónico" required>
             <button type="submit">Enviar Link de Recuperación</button>

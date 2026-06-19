@@ -169,7 +169,8 @@ app.get('/register', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-    res.render('login', { error: null, exito: null });
+    const emailEnviado = req.query.emailEnviado === 'true';
+    res.render('login', { error: null, exito: null, emailEnviado });
 });
 
 
@@ -287,13 +288,13 @@ app.post('/login', async (req, res) => {
 
 // ================= RECUPERO DE CONTRASEÑA POR LINK DE EMAIL =================
 
-app.get('/forgot', (req, res) => res.render('forgot'));
+app.get('/forgot', (req, res) => res.render('forgot', { error: null }));
 
 app.post('/forgot', async (req, res) => {
     const { email } = req.body;
     try {
         const usuario = await Usuario.findOne({ email });
-        if (!usuario) return res.send('No existe ninguna cuenta asociada a ese correo electrónico.');
+        if (!usuario) return res.render('forgot', { error: 'No existe ninguna cuenta asociada a ese correo electrónico.' });
 
         const token = crypto.randomBytes(20).toString('hex');
         usuario.resetPasswordToken = token;
@@ -311,7 +312,7 @@ app.post('/forgot', async (req, res) => {
         };
 
         await transporter.sendMail(mailOptions);
-        res.send('¡Enlace enviado! Revisá tu casilla de correo electrónico.');
+        res.redirect('/login?emailEnviado=true');
     } catch (err) {
         res.status(500).send('Error al procesar el recupero.');
     }
