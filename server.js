@@ -19,6 +19,7 @@ app.set('strict routing', false);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+app.set('trust proxy', 1);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 
@@ -68,9 +69,15 @@ app.use(session({
     secret: 'super-etendart-secret-key-2026',
     resave: false,
     saveUninitialized: false,
+    proxy: true, // 🚀 OBLIGATORIO PARA VERCEL: Permite manejar sesiones en la nube
     store: MongoStore.create({
         mongoUrl: "mongodb+srv://fernandogonzalez_db_user:superetendart@cluster0.e6ufwoz.mongodb.net/superetendart?retryWrites=true&w=majority"
-    })
+    }),
+    cookie: {
+        secure: true,      // Forzar a que viaje solo por HTTPS (Vercel lo usa por defecto)
+        sameSite: 'none',   // Permite que la cookie se comparta correctamente en Vercel
+        maxAge: 24 * 60 * 60 * 1000 // Duración de la sesión (1 día)
+    }
 }));
 
 
