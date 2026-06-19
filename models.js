@@ -15,19 +15,19 @@ const UsuarioSchema = new mongoose.Schema({
     resetPasswordExpires: Date   // Define la fecha de vencimiento de ese link (1 hora)
 });
 
-// 🚀 ENCRIPTACIÓN AUTOMÁTICA: Se ejecuta justo antes de guardar el usuario en MongoDB
-UsuarioSchema.pre('save', async function (next) {
-    // Si la contraseña no se modificó (ej: si cambiaste el rol pero no la clave), salteamos
-    if (!this.isModified('password')) return next();
+// 🚀 ENCRIPTACIÓN AUTOMÁTICA (Versión moderna compatible con Mongoose 9)
+UsuarioSchema.pre('save', async function () {
+    // Si la contraseña no se modificó, salteamos el proceso
+    if (!this.isModified('password')) return;
 
     try {
         const salt = await bcrypt.genSalt(10); // Genera la base aleatoria de seguridad
         this.password = await bcrypt.hash(this.password, salt); // Transforma la clave en el hash seguro
-        next();
     } catch (err) {
-        next(err);
+        throw err; // Lanza el error para que lo ataje el catch de tu ruta
     }
 });
+
 
 // Esquema de las Fotos de la Galería estilo Instagram
 const FotoSchema = new mongoose.Schema({
