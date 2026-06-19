@@ -69,16 +69,14 @@ app.set('trust proxy', 1);
 
 app.use(session({
     secret: 'super-etendart-secret-key-2026',
-    resave: true,              // 🚀 CAMBIO: Obliga a guardar la sesión si hubo cambios
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true, // 🚀 CAMBIO: Obliga a inicializar una sesión vacía para asegurar que la cookie se cree
     proxy: true,
     store: MongoStore.create({
-        mongoUrl: "mongodb+srv://fernandogonzalez_db_user:superetendart@cluster0.e6ufwoz.mongodb.net/superetendart?retryWrites=true&w=majority",
-        ttl: 14 * 24 * 60 * 60 // Mantiene viva la sesión en la BD por 14 días
+        mongoUrl: "mongodb+srv://fernandogonzalez_db_user:superetendart@cluster0.e6ufwoz.mongodb.net/superetendart?retryWrites=true&w=majority"
     }),
     cookie: {
-        secure: true,          // Requiere HTTPS obligatoriamente en Vercel
-        sameSite: 'lax',       // 🚀 CAMBIO: 'lax' es el valor correcto para que funcione bajo el mismo dominio de Vercel
+        secure: false, // 🚀 CAMBIO: Al ponerlo en false, evitamos que las funciones lambda de Vercel bloqueen el guardado de la cookie por problemas de certificados
         maxAge: 24 * 60 * 60 * 1000
     }
 }));
@@ -250,7 +248,7 @@ app.post('/login', async (req, res) => {
             return res.render('login', { error: 'El nombre de usuario no existe.', exito: null });
         }
 
-        // 🚀 NUEVO: Compara la contraseña ingresada con el hash encriptado de MongoDB
+        // 🚀 Compara la contraseña ingresada con el hash encriptado de MongoDB
         const bcrypt = require('bcrypt');
         const esClaveCorrecta = await bcrypt.compare(password, usuario.password);
 
@@ -258,16 +256,26 @@ app.post('/login', async (req, res) => {
             return res.render('login', { error: 'La contraseña ingresada es incorrecta.', exito: null });
         }
 
-        // Si es correcta, iniciamos la sesión
+        // Si es correcta, asignamos los datos a la sesión
         req.session.userId = usuario._id;
         req.session.userRol = usuario.rol;
 
-        res.redirect('/');
+        // 🚀 NUEVO: Forzamos el guardado manual de la sesión en la base de datos antes de redirigir
+        req.session.save((err) => {
+            if (err) {
+                console.error("⚠️ Error al guardar la sesión manualmente:", err);
+                return res.render('login', { error: 'Error al iniciar sesión.', exito: null });
+            }
+            // Recién cuando confirmamos que se guardó en Atlas, hacemos la redirección
+            res.redirect('/');
+        });
+
     } catch (err) {
         console.error(err);
         res.render('login', { error: 'Error al intentar iniciar sesión.', exito: null });
     }
 });
+
 
 
 // ================= RECUPERO DE CONTRASEÑA POR LINK DE EMAIL =================
