@@ -35,13 +35,15 @@ async function conectarBaseDeDatos() {
     }
 
     console.log('🔄 Conectando a MongoDB Atlas...');
-    cachedConnection = await mongoose.connect("mongodb+srv://fernandogonzalez_db_user:superetendart@cluster0.e6ufwoz.mongodb.net/superetendart?retryWrites=true&w=majority", {
+    // 🚀 CAMBIO: Cambiamos /superetendart por /test antes del signo de pregunta
+    cachedConnection = await mongoose.connect("mongodb+srv://fernandogonzalez_db_user:superetendart@cluster0.e6ufwoz.mongodb.net/test?retryWrites=true&w=majority", {
         serverSelectionTimeoutMS: 5000,
         maxPoolSize: 10
     });
     console.log('🚀 MongoDB Conectado con Éxito');
     return cachedConnection;
 }
+
 
 // Arranca la conexión apenas se levanta el servidor
 conectarBaseDeDatos().catch(err => console.error('⚠️ Error al conectar MongoDB:', err));
