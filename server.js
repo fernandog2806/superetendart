@@ -65,18 +65,21 @@ if (!blobConfigured) {
 }
 
 // Configuración de Sesiones guardadas directamente en MongoDB
+app.set('trust proxy', 1);
+
 app.use(session({
     secret: 'super-etendart-secret-key-2026',
-    resave: false,
+    resave: true,              // 🚀 CAMBIO: Obliga a guardar la sesión si hubo cambios
     saveUninitialized: false,
-    proxy: true, // 🚀 OBLIGATORIO PARA VERCEL: Permite manejar sesiones en la nube
+    proxy: true,
     store: MongoStore.create({
-        mongoUrl: "mongodb+srv://fernandogonzalez_db_user:superetendart@cluster0.e6ufwoz.mongodb.net/superetendart?retryWrites=true&w=majority"
+        mongoUrl: "mongodb+srv://fernandogonzalez_db_user:superetendart@cluster0.e6ufwoz.mongodb.net/superetendart?retryWrites=true&w=majority",
+        ttl: 14 * 24 * 60 * 60 // Mantiene viva la sesión en la BD por 14 días
     }),
     cookie: {
-        secure: true,      // Forzar a que viaje solo por HTTPS (Vercel lo usa por defecto)
-        sameSite: 'none',   // Permite que la cookie se comparta correctamente en Vercel
-        maxAge: 24 * 60 * 60 * 1000 // Duración de la sesión (1 día)
+        secure: true,          // Requiere HTTPS obligatoriamente en Vercel
+        sameSite: 'lax',       // 🚀 CAMBIO: 'lax' es el valor correcto para que funcione bajo el mismo dominio de Vercel
+        maxAge: 24 * 60 * 60 * 1000
     }
 }));
 
