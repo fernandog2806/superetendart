@@ -26,9 +26,12 @@ app.use(express.urlencoded({ extended: true }));
 // CADENA DE CONEXIÓN DINÁMICA (Si estás en tu PC, usa tu base local fija; en internet lee Vercel)
 const MONGO_URI = process.env.MONGO_URL || 'mongodb://localhost:27017/superetendart';
 
-mongoose.connect("mongodb+srv://fernandogonzalez_db_user:superetendart@cluster0.e6ufwoz.mongodb.net/superetendart?retryWrites=true&w=majority")
+mongoose.connect("mongodb+srv://fernandogonzalez_db_user:superetendart@cluster0.e6ufwoz.mongodb.net/superetendart?retryWrites=true&w=majority", {
+    bufferCommands: false // 🚀 Esto evita que los métodos se queden colgados esperando eternamente
+})
     .then(() => console.log('🚀 MongoDB Conectado con Éxito'))
     .catch(err => console.error('⚠️ Error al conectar MongoDB:', err));
+
 
 const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_TOKEN || process.env.VERCEL_OIDC_TOKEN;
 const BLOB_STORE_ID = process.env.BLOB_STORE_ID;
@@ -66,8 +69,8 @@ const mailConfigured = Boolean(EMAIL_USER && EMAIL_PASS);
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+        user: 'fernando.gonzalez28061991@gmail.com', // Reemplazá esto por tu cuenta de Gmail de envío
+        pass: 'hpwqlkqdjedynzid'           // Poné acá tu clave de aplicación de 16 letras limpia
     }
 });
 
@@ -138,6 +141,12 @@ app.get('/register', (req, res) => res.render('register'));
 app.post('/register', async (req, res) => {
     const { nombre, apellido, username, email, password, esDueñoCheck, codigoBanda } = req.body;
     try {
+        // 🚀 NUEVO: Si no está conectado, forzamos a que espere o tire error rápido en vez de congelarse
+        if (mongoose.connection.readyState !== 1) {
+            console.log('🔄 MongoDB no estaba listo, intentando reconectar...');
+            return res.status(500).send('La base de datos se está conectando, por favor refrescá la página e intentá de nuevo.');
+        }
+
         const existeUser = await Usuario.findOne({ $or: [{ username }, { email }] });
         if (existeUser) return res.send('El usuario o el correo electrónico ya están registrados.');
 
@@ -157,21 +166,18 @@ app.post('/register', async (req, res) => {
 
         // Envío de mail de bienvenida encapsulado para que no rompa el flujo si falla en local
         const mailOptions = {
-            from: '"SUPER ETENDART" <no-reply@superetendart.com>',
+            from: '"SUPER ETENDART" <tu_correo_real@gmail.com>', // 🎸 IMPORTANTE: Cambiá esto por tu Gmail real de envío
             to: email,
             subject: '🎸 ¡Bienvenido a la comunidad de SUPER ETENDART!',
             html: `<h3>¡Hola ${nombre}!</h3><p>Tu cuenta fue creada con éxito como <b>${rolAsignado}</b>.</p><br><p>Abrazo rockero.</p>`
         };
 
-        if (!mailConfigured) {
-            console.warn('⚠️ Registro completado pero el correo no se envió porque EMAIL_USER/EMAIL_PASS no están configurados.');
-        } else {
-            await transporter.sendMail(mailOptions)
-                .then(() => console.log('✅ Mail enviado con éxito.'))
-                .catch(err => {
-                    console.error('⚠️ Error enviando mail de registro:', err);
-                });
-        }
+        // Forzamos el envío ignorando la flag anterior que fallaba con dotenvx
+        await transporter.sendMail(mailOptions)
+            .then(() => console.log('✅ Mail enviado con éxito.'))
+            .catch(err => {
+                console.error('⚠️ Error enviando mail de registro:', err);
+            });
 
         res.redirect('/login');
     } catch (err) {
@@ -179,6 +185,7 @@ app.post('/register', async (req, res) => {
         res.status(500).send('Error en el proceso de registro.');
     }
 });
+
 
 // Procesar Inicio de Sesión
 app.post('/login', async (req, res) => {
