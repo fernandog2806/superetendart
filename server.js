@@ -26,11 +26,25 @@ app.use(express.urlencoded({ extended: true }));
 // CADENA DE CONEXIÓN DINÁMICA (Si estás en tu PC, usa tu base local fija; en internet lee Vercel)
 const MONGO_URI = process.env.MONGO_URL || 'mongodb://localhost:27017/superetendart';
 
-mongoose.connect("mongodb+srv://fernandogonzalez_db_user:superetendart@cluster0.e6ufwoz.mongodb.net/superetendart?retryWrites=true&w=majority", {
-    bufferCommands: false // 🚀 Esto evita que los métodos se queden colgados esperando eternamente
-})
-    .then(() => console.log('🚀 MongoDB Conectado con Éxito'))
-    .catch(err => console.error('⚠️ Error al conectar MongoDB:', err));
+// 1. Borrá tu viejo mongoose.connect y pegá todo esto en su lugar:
+let cachedConnection = null;
+
+async function conectarBaseDeDatos() {
+    if (cachedConnection && mongoose.connection.readyState === 1) {
+        return cachedConnection;
+    }
+
+    console.log('🔄 Conectando a MongoDB Atlas...');
+    cachedConnection = await mongoose.connect("mongodb+srv://fernandogonzalez_db_user:superetendart@cluster0.e6ufwoz.mongodb.net/superetendart?retryWrites=true&w=majority", {
+        serverSelectionTimeoutMS: 5000,
+        maxPoolSize: 10
+    });
+    console.log('🚀 MongoDB Conectado con Éxito');
+    return cachedConnection;
+}
+
+// Arranca la conexión apenas se levanta el servidor
+conectarBaseDeDatos().catch(err => console.error('⚠️ Error al conectar MongoDB:', err));
 
 
 const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_TOKEN || process.env.VERCEL_OIDC_TOKEN;
@@ -141,11 +155,8 @@ app.get('/register', (req, res) => res.render('register'));
 app.post('/register', async (req, res) => {
     const { nombre, apellido, username, email, password, esDueñoCheck, codigoBanda } = req.body;
     try {
-        // 🚀 NUEVO: Si no está conectado, forzamos a que espere o tire error rápido en vez de congelarse
-        if (mongoose.connection.readyState !== 1) {
-            console.log('🔄 MongoDB no estaba listo, intentando reconectar...');
-            return res.status(500).send('La base de datos se está conectando, por favor refrescá la página e intentá de nuevo.');
-        }
+        // 🚀 OBLIGAMOS A ESPERAR LA CONEXIÓN: Evita que Mongoose tire el timeout en Vercel
+        await conectarBaseDeDatos();
 
         const existeUser = await Usuario.findOne({ $or: [{ username }, { email }] });
         if (existeUser) return res.send('El usuario o el correo electrónico ya están registrados.');
@@ -164,15 +175,15 @@ app.post('/register', async (req, res) => {
         const nuevoUsuario = new Usuario({ nombre, apellido, username, email, password, rol: rolAsignado });
         await nuevoUsuario.save();
 
-        // Envío de mail de bienvenida encapsulado para que no rompa el flujo si falla en local
+        // Envío de mail de bienvenida encapsulado
         const mailOptions = {
-            from: '"SUPER ETENDART" <tu_correo_real@gmail.com>', // 🎸 IMPORTANTE: Cambiá esto por tu Gmail real de envío
+            from: '"SUPER ETENDART" <fernando.gonzalez28061991@gmail.com>', // 🎸 Tu correo configurado con éxito
             to: email,
             subject: '🎸 ¡Bienvenido a la comunidad de SUPER ETENDART!',
             html: `<h3>¡Hola ${nombre}!</h3><p>Tu cuenta fue creada con éxito como <b>${rolAsignado}</b>.</p><br><p>Abrazo rockero.</p>`
         };
 
-        // Forzamos el envío ignorando la flag anterior que fallaba con dotenvx
+        // Forzamos el envío de Nodemailer con los datos fijos del código
         await transporter.sendMail(mailOptions)
             .then(() => console.log('✅ Mail enviado con éxito.'))
             .catch(err => {
@@ -185,6 +196,7 @@ app.post('/register', async (req, res) => {
         res.status(500).send('Error en el proceso de registro.');
     }
 });
+
 
 
 // Procesar Inicio de Sesión
