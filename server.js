@@ -35,12 +35,14 @@ async function conectarBaseDeDatos() {
     }
 
     console.log('🔄 Conectando a MongoDB Atlas...');
-    // 🚀 CAMBIO: Cambiamos /superetendart por /test antes del signo de pregunta
-    cachedConnection = await mongoose.connect("mongodb+srv://fernandogonzalez_db_user:superetendart@cluster0.e6ufwoz.mongodb.net/test?retryWrites=true&w=majority", {
+
+    // 🎸 ACÁ ES DONDE VA EL CAMBIO (con la E mayúscula antes del signo de pregunta):
+    cachedConnection = await mongoose.connect("mongodb+srv://fernandogonzalez_db_user:superetendart@cluster0.e6ufwoz.mongodb.net/superEtendart?retryWrites=true&w=majority", {
         serverSelectionTimeoutMS: 5000,
         maxPoolSize: 10
     });
-    console.log('🚀 MongoDB Conectado con Éxito');
+
+    console.log('🚀 MongoDB Conectado con Éxito'); // Este dejalo igual, es solo un aviso
     return cachedConnection;
 }
 
