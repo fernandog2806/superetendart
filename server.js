@@ -155,52 +155,71 @@ app.get('/video', (req, res) => res.render('video', { listaVideos }));
 
 // ================= AUTENTICACIÓN AVANZADA (LOGIN / REGISTRO) =================
 
-app.get('/login', (req, res) => res.render('login'));
-app.get('/register', (req, res) => res.render('register'));
+app.get('/register', (req, res) => {
+    res.render('register', { error: null });
+});
+
+app.get('/login', (req, res) => {
+    res.render('login', { error: null, exito: null });
+});
+
 
 // Procesar Registro Completo y Blindado contra errores de Nodemailer en localhost
 app.post('/register', async (req, res) => {
     const { nombre, apellido, username, email, password, esDueñoCheck, codigoBanda } = req.body;
     try {
-        // 🚀 OBLIGAMOS A ESPERAR LA CONEXIÓN: Evita que Mongoose tire el timeout en Vercel
         await conectarBaseDeDatos();
 
+        // 1. Validación: Que ningún campo obligatorio esté vacío
+        if (!nombre || !apellido || !username || !email || !password) {
+            return res.render('register', { error: 'Por favor, completá todos los campos obligatorios.' });
+        }
+
+        // 2. Validación: Formato de email correcto (Regex básico)
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.render('register', { error: 'El formato del correo electrónico no es válido.' });
+        }
+
+        // 3. Validación: Largo de la contraseña
+        if (password.length < 6) {
+            return res.render('register', { error: 'La contraseña debe tener al menos 6 caracteres.' });
+        }
+
         const existeUser = await Usuario.findOne({ $or: [{ username }, { email }] });
-        if (existeUser) return res.send('El usuario o el correo electrónico ya están registrados.');
+        if (existeUser) {
+            return res.render('register', { error: 'El nombre de usuario o el correo electrónico ya están registrados.' });
+        }
 
         let rolAsignado = 'fan';
 
-        // Si tildó que es músico, comparamos contra tu constante fija
         if (esDueñoCheck) {
             if (codigoBanda === CODIGO_SECRETO_BANDA) {
                 rolAsignado = 'dueño';
             } else {
-                return res.send('Código secreto de la banda incorrecto. No podés registrarte como dueño.');
+                return res.render('register', { error: 'Código secreto incorrecto. No podés registrarte como dueño.' });
             }
         }
 
         const nuevoUsuario = new Usuario({ nombre, apellido, username, email, password, rol: rolAsignado });
         await nuevoUsuario.save();
 
-        // Envío de mail de bienvenida encapsulado
         const mailOptions = {
-            from: '"SUPER ETENDART" <fernando.gonzalez28061991@gmail.com>', // 🎸 Tu correo configurado con éxito
+            from: '"SUPER ETENDART" <fernando.gonzalez28061991@gmail.com>',
             to: email,
             subject: '🎸 ¡Bienvenido a la comunidad de SUPER ETENDART!',
             html: `<h3>¡Hola ${nombre}!</h3><p>Tu cuenta fue creada con éxito como <b>${rolAsignado}</b>.</p><br><p>Abrazo rockero.</p>`
         };
 
-        // Forzamos el envío de Nodemailer con los datos fijos del código
         await transporter.sendMail(mailOptions)
             .then(() => console.log('✅ Mail enviado con éxito.'))
-            .catch(err => {
-                console.error('⚠️ Error enviando mail de registro:', err);
-            });
+            .catch(err => console.error('⚠️ Error enviando mail:', err));
 
-        res.redirect('/login');
+        // Si todo sale bien, redirige al login pero le avisamos que se registró con éxito
+        res.render('login', { error: null, exito: '¡Registro completado! Ya podés iniciar sesión.' });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error en el proceso de registro.');
+        res.render('register', { error: 'Hubo un error interno en el servidor. Intentá más tarde.' });
     }
 });
 
@@ -210,16 +229,35 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     try {
-        const cuenta = await Usuario.findOne({ username });
-        if (cuenta && cuenta.password === password) {
-            req.session.usuario = { id: cuenta._id, username: cuenta.username, rol: cuenta.rol };
-            return res.redirect('/fotos');
+        await conectarBaseDeDatos();
+
+        // 1. Validación: Campos vacíos
+        if (!username || !password) {
+            return res.render('login', { error: 'Por favor, ingresá tu usuario y contraseña.', exito: null });
         }
-        res.send('Usuario o contraseña incorrectos.');
+
+        // 2. Validación: Buscar si el usuario existe
+        const usuario = await Usuario.findOne({ username });
+        if (!usuario) {
+            return res.render('login', { error: 'El nombre de usuario no existe.', exito: null });
+        }
+
+        // 3. Validación: Comparar contraseña (ajustalo si usás bcrypt, acá va directo)
+        if (usuario.password !== password) {
+            return res.render('login', { error: 'La contraseña ingresada es incorrecta.', exito: null });
+        }
+
+        // Si las credenciales son válidas, guardamos la sesión y redirigimos
+        req.session.userId = usuario._id;
+        req.session.userRol = usuario.rol;
+
+        res.redirect('/');
     } catch (err) {
-        res.status(500).send('Error al iniciar sesión.');
+        console.error(err);
+        res.render('login', { error: 'Error al intentar iniciar sesión.', exito: null });
     }
 });
+
 
 // ================= RECUPERO DE CONTRASEÑA POR LINK DE EMAIL =================
 

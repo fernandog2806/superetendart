@@ -77,19 +77,37 @@
 </head>
 
 <body>
-    <!-- Copia esta línea arriba de todo, abajo del body de tus pantallas de login y registro -->
     <%- include('partials/nav') %>
 
-    <div class="box">
-        <h2>Ingresar</h2>
-        <form action="/login" method="POST">
-            <input type="text" name="username" placeholder="Usuario" required>
-            <input type="password" name="password" placeholder="Contraseña" required>
-            <button type="submit">Iniciar Sesión</button>
-        </form>
-        <p><a href="/forgot" style="color: #ff3040; font-size: 13px;">¿Olvidaste tu contraseña?</a></p>
-        <p>¿No tenés cuenta? <a href="/register">Registrate acá</a></p>
-    </div>
+        <div class="box">
+            <h2>Ingresar</h2>
+
+            <!-- 🔴 Cartel de Error: Si ponen mal el usuario o la contraseña -->
+            <% if (locals.error) { %>
+                <div class="alerta-error"
+                    style="color: #ff4a4a; background: #2a1515; padding: 12px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ff0000; font-size: 14px; text-align: center;">
+                    ⚠️ <%= error %>
+                </div>
+                <% } %>
+
+                    <!-- 🟢 Cartel de Éxito: Cuando el registro sale bien y los manda para acá -->
+                    <% if (locals.exito) { %>
+                        <div class="alerta-exito"
+                            style="color: #4aff4a; background: #152a15; padding: 12px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #00ff00; font-size: 14px; text-align: center;">
+                            🎉 <%= exito %>
+                        </div>
+                        <% } %>
+
+                            <form action="/login" method="POST">
+                                <input type="text" name="username" placeholder="Usuario" required>
+                                <input type="password" name="password" placeholder="Contraseña" required>
+                                <button type="submit">Iniciar Sesión</button>
+                            </form>
+                            <p><a href="/forgot" style="color: #ff3040; font-size: 13px;">¿Olvidaste tu contraseña?</a>
+                            </p>
+                            <p>¿No tenés cuenta? <a href="/register">Registrate acá</a></p>
+        </div>
 </body>
+
 
 </html>

@@ -101,48 +101,58 @@
 <body>
     <!-- Copia esta línea arriba de todo, abajo del body de tus pantallas de login y registro -->
     <%- include('partials/nav') %>
+    
+        <div class="box">
+            <h2>Crear Cuenta</h2>
+    
+            <!-- 🚀 NUEVO: Este bloque muestra el error del servidor adentro de tu diseño si algo falla -->
+            <% if (locals.error) { %>
+                <div class="alerta-error"
+                    style="color: #ff4a4a; background: #2a1515; padding: 12px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ff0000; font-size: 14px; text-align: center;">
+                    ⚠️ <%= error %>
+                </div>
+                <% } %>
+    
+                    <form action="/register" method="POST" onsubmit="return validarPasswords()">
+                        <div class="row">
+                            <input type="text" name="nombre" placeholder="Nombre" required>
+                            <input type="text" name="apellido" placeholder="Apellido" required>
+                        </div>
+                        <input type="text" name="username" placeholder="Nombre de Usuario" required>
+                        <input type="email" name="email" placeholder="Correo Electrónico" required>
+                        <input type="password" name="password" id="pass" placeholder="Contraseña" required>
+                        <input type="password" id="pass2" placeholder="Repetir Contraseña" required>
+    
+                        <label class="check-group">
+                            <input type="checkbox" name="esDueñoCheck" id="esDueñoCheck">
+                            <span>Soy músico / dueño de la banda</span>
+                        </label>
+    
+                        <div id="campo-codigo" style="display: none;">
+                            <input type="password" name="codigoBanda" placeholder="Código Secreto de la Banda">
+                        </div>
+    
+                        <button type="submit">Registrarme</button>
+                    </form>
+                    <p>¿Ya tenés cuenta? <a href="/login">Iniciá sesión</a></p>
+        </div>
+    
+        <script>
+            document.getElementById('esDueñoCheck').addEventListener('change', function () {
+                document.getElementById('campo-codigo').style.display = this.checked ? 'block' : 'none';
+            });
 
-    <div class="box">
-        <h2>Crear Cuenta</h2>
-        <form action="/register" method="POST" onsubmit="return validarPasswords()">
-            <div class="row">
-                <input type="text" name="nombre" placeholder="Nombre" required>
-                <input type="text" name="apellido" placeholder="Apellido" required>
-            </div>
-            <input type="text" name="username" placeholder="Nombre de Usuario" required>
-            <input type="email" name="email" placeholder="Correo Electrónico" required>
-            <input type="password" name="password" id="pass" placeholder="Contraseña" required>
-            <input type="password" id="pass2" placeholder="Repetir Contraseña" required>
-
-            <label class="check-group">
-                <input type="checkbox" name="esDueñoCheck" id="esDueñoCheck">
-                <span>Soy músico / dueño de la banda</span>
-            </label>
-
-            <div id="campo-codigo" style="display: none;">
-                <input type="password" name="codigoBanda" placeholder="Código Secreto de la Banda">
-            </div>
-
-            <button type="submit">Registrarme</button>
-        </form>
-        <p>¿Ya tenés cuenta? <a href="/login">Iniciá sesión</a></p>
-    </div>
-
-    <script>
-        document.getElementById('esDueñoCheck').addEventListener('change', function () {
-            document.getElementById('campo-codigo').style.display = this.checked ? 'block' : 'none';
-        });
-
-        function validarPasswords() {
-            const p1 = document.getElementById('pass').value;
-            const p2 = document.getElementById('pass2').value;
-            if (p1 !== p2) {
-                alert("Las contraseñas no coinciden.");
-                return false;
+            function validarPasswords() {
+                const p1 = document.getElementById('pass').value;
+                const p2 = document.getElementById('pass2').value;
+                if (p1 !== p2) {
+                    alert("Las contraseñas no coinciden.");
+                    return false;
+                }
+                return true;
             }
-            return true;
-        }
-    </script>
+        </script>
+
 </body>
 
 </html>
