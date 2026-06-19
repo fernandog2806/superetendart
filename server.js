@@ -37,10 +37,11 @@ async function conectarBaseDeDatos() {
     console.log('🔄 Conectando a MongoDB Atlas...');
 
     // 🎸 ACÁ ES DONDE VA EL CAMBIO (con la E mayúscula antes del signo de pregunta):
-    cachedConnection = await mongoose.connect("mongodb+srv://fernandogonzalez_db_user:superetendart@cluster0.e6ufwoz.mongodb.net/superEtendart?retryWrites=true&w=majority", {
+    cachedConnection = await mongoose.connect("mongodb+srv://fernandogonzalez_db_user:superetendart@cluster0.e6ufwoz.mongodb.net/superetendart?retryWrites=true&w=majority", {
         serverSelectionTimeoutMS: 5000,
         maxPoolSize: 10
     });
+
 
     console.log('🚀 MongoDB Conectado con Éxito'); // Este dejalo igual, es solo un aviso
     return cachedConnection;
@@ -67,9 +68,11 @@ app.use(session({
     secret: 'super-etendart-secret-key-2026',
     resave: false,
     saveUninitialized: false,
-    store: new MongoStore({ mongoUrl: MONGO_URI }),
-    cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 día activo
+    store: MongoStore.create({
+        mongoUrl: "mongodb+srv://fernandogonzalez_db_user:superetendart@cluster0.e6ufwoz.mongodb.net/superetendart?retryWrites=true&w=majority"
+    })
 }));
+
 
 // =============================================================================
 // 🔑 TU CÓDIGO FIJO MAESTRO (El que le pasás a los integrantes de la banda)
