@@ -26,10 +26,9 @@ app.use(express.urlencoded({ extended: true }));
 // CADENA DE CONEXIÓN DINÁMICA (Si estás en tu PC, usa tu base local fija; en internet lee Vercel)
 const MONGO_URI = process.env.MONGO_URL || 'mongodb://localhost:27017/superetendart';
 
-mongoose.connect(MONGO_URI)
+mongoose.connect("mongodb+srv://fernandogonzalez_db_user:superetendart@cluster0.e6ufwoz.mongodb.net/superetendart?retryWrites=true&w=majority")
     .then(() => console.log('🚀 MongoDB Conectado con Éxito'))
     .catch(err => console.error('⚠️ Error al conectar MongoDB:', err));
-
 
 const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_TOKEN || process.env.VERCEL_OIDC_TOKEN;
 const BLOB_STORE_ID = process.env.BLOB_STORE_ID;
