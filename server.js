@@ -355,9 +355,11 @@ app.post('/reset/:token', async (req, res) => {
 // 1. Mostrar la galería leyendo los datos reales de MongoDB Atlas
 app.get('/fotos', async (req, res) => {
     try {
+        await conectarBaseDeDatos();
         const fotosDb = await Foto.find().sort({ fecha: -1 });
         res.render('fotos', { fotosDb }); // Pasa el array completo de objetos de la base de datos
     } catch (err) {
+        console.error('Error al cargar fotos:', err);
         res.status(500).send('Error al cargar la galería.');
     }
 });
