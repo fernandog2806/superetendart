@@ -102,19 +102,19 @@
                                 <input type="text" name="username" placeholder="Usuario" required>
 
                                 <!-- 🚀 Contraseña con Ojo Relleno y Transparente Integrado -->
-                                <div class="input-contenedor"
-                                    style="position: relative; width: 100%; margin-bottom: 15px;">
-                                    <input type="password" name="password" id="passLogin" placeholder="Contraseña"
-                                        required style="width: 100%; padding-right: 40px; box-sizing: border-box;">
+                                <div class="input-contenedor" style="position: relative; width: 100%; margin-bottom: 15px;">
+                                    <input type="password" name="password" id="passLogin" placeholder="Contraseña" required
+                                        style="width: 100%; padding-right: 40px; box-sizing: border-box;">
                                     <button type="button" onclick="alternarOjo('passLogin', this)"
-                                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; padding: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; outline: none; width: 24px; height: 24px; color: inherit;">
-                                        <svg class="icono-ojo" viewBox="0 0 24 24" fill="currentColor"
-                                            style="width: 22px; height: 22px; opacity: 0.7; pointer-events: none;">
+                                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; padding: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; outline: none; width: 24px; height: 24px;">
+                                        <svg class="icono-ojo" viewBox="0 0 24 24" fill="#333333"
+                                            style="width: 22px; height: 22px; pointer-events: none;">
                                             <path
                                                 d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
                                         </svg>
                                     </button>
                                 </div>
+
 
                                 <button type="submit">Iniciar Sesión</button>
                             </form>
@@ -127,7 +127,7 @@
         <script>
             function alternarOjo(idInput, boton) {
                 const input = document.getElementById(idInput);
-               const ojoAbierto = `<svg class="icono-ojo" viewBox="0 0 24 24" fill="#333333" style="width: 22px; height: 22px; pointer-events: none;"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>`;
+                const ojoAbierto = `<svg class="icono-ojo" viewBox="0 0 24 24" fill="#333333" style="width: 22px; height: 22px; pointer-events: none;"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>`;
                 const ojoTachado = `<svg class="icono-ojo" viewBox="0 0 24 24" fill="#333333" style="width: 22px; height: 22px; pointer-events: none;"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.03 2.63 3.03 4.79 5.59 6.01l-1.42 1.42 1.41 1.41 16.24-16.24-1.41-1.41-2.45 2.45A11.75 11.75 0 0 0 12 4.5zm0 4.5c.34 0 .67.04.99.11L9.11 12.99c-.07-.32-.11-.65-.11-.99 0-1.66 1.34-3 3-3zm0 8c-1.66 0-3-1.34-3-3 0-.34.04-.67.11-.99l4.88 4.88c-.32.07-.65.11-.99.11zm6.41-1.99A11.37 11.37 0 0 0 23 12c-1.73-4.39-6-7.5-11-7.5-.96 0-1.9.12-2.8.34l2.45 2.45c.11-.01.23-.03.35-.03 2.76 0 5 2.24 5 5 0 .12-.02.24-.03.35l2.45 2.45z"/></svg>`;
 
 
