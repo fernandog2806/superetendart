@@ -258,8 +258,14 @@ app.post('/login', async (req, res) => {
         }
 
         // Si es correcta, asignamos los datos a la sesión
-        req.session.userId = usuario._id;
-        req.session.userRol = usuario.rol;
+        req.session.usuario = {
+            id: usuario._id,
+            username: usuario.username,
+            nombre: usuario.nombre,
+            apellido: usuario.apellido,
+            email: usuario.email,
+            rol: usuario.rol
+        };
 
         // 🚀 NUEVO: Forzamos el guardado manual de la sesión en la base de datos antes de redirigir
         req.session.save((err) => {
@@ -464,11 +470,11 @@ app.post('/borrar-foto', async (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    // Verificamos si existe el ID del usuario en la sesión
-    const usuarioLogueado = req.session.userId || null;
+    // Verificamos si existe el usuario en la sesión
+    const usuarioLogueado = req.session.usuario || null;
 
     // Le pasamos el usuario a la vista index.ejs
-    res.render('index', { usuario: usuarioLogueado });
+    res.render('index', { usuario: usuarioLogueado, integrantes });
 });
 
 // Cerrar Sesión
