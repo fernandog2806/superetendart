@@ -231,23 +231,24 @@ app.post('/login', async (req, res) => {
     try {
         await conectarBaseDeDatos();
 
-        // 1. Validación: Campos vacíos
         if (!username || !password) {
             return res.render('login', { error: 'Por favor, ingresá tu usuario y contraseña.', exito: null });
         }
 
-        // 2. Validación: Buscar si el usuario existe
         const usuario = await Usuario.findOne({ username });
         if (!usuario) {
             return res.render('login', { error: 'El nombre de usuario no existe.', exito: null });
         }
 
-        // 3. Validación: Comparar contraseña (ajustalo si usás bcrypt, acá va directo)
-        if (usuario.password !== password) {
+        // 🚀 NUEVO: Compara la contraseña ingresada con el hash encriptado de MongoDB
+        const bcrypt = require('bcrypt');
+        const esClaveCorrecta = await bcrypt.compare(password, usuario.password);
+
+        if (!esClaveCorrecta) {
             return res.render('login', { error: 'La contraseña ingresada es incorrecta.', exito: null });
         }
 
-        // Si las credenciales son válidas, guardamos la sesión y redirigimos
+        // Si es correcta, iniciamos la sesión
         req.session.userId = usuario._id;
         req.session.userRol = usuario.rol;
 
