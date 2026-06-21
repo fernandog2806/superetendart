@@ -6,7 +6,7 @@
   * Sitio web institucional de la banda con diseño oscuro y estético.
   * Secciones informativas y optimización para visualización en Vercel.
 
-### 📸 Fase 2: Galería Dinámica e Interacciones (Próximo Paso)
+### 📸 Fase 2: Galería Dinámica e Interacciones (Hecho)
 * **Objetivo**: Añadir el feed estilo Instagram y el control de accesos.
 * **Desarrollo**:
   * Integración de base de datos con **Mongoose (MongoDB)** y almacenamiento en **Vercel Blob**.
