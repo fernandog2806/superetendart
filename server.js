@@ -24,10 +24,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 
 
-// CADENA DE CONEXIÓN DINÁMICA (Si estás en tu PC, usa tu base local fija; en internet lee Vercel)
-const MONGO_URI = process.env.MONGO_URL || 'mongodb://localhost:27017/superetendart';
+// CADENA DE CONEXIÓN DINÁMICA (usa .env en local o en producción)
+const MONGO_URL = process.env.MONGO_URL || 'mongodb://localhost:27017/superetendart';
 
-// 1. Borrá tu viejo mongoose.connect y pegá todo esto en su lugar:
 let cachedConnection = null;
 
 async function conectarBaseDeDatos() {
@@ -35,10 +34,9 @@ async function conectarBaseDeDatos() {
         return cachedConnection;
     }
 
-    console.log('🔄 Conectando a MongoDB Atlas...');
+    console.log('🔄 Conectando a MongoDB...');
 
-    // 🎸 ACÁ ES DONDE VA EL CAMBIO (con la E mayúscula antes del signo de pregunta):
-    cachedConnection = await mongoose.connect("mongodb+srv://fernandogonzalez_db_user:superetendart@cluster0.e6ufwoz.mongodb.net/superetendart?retryWrites=true&w=majority", {
+    cachedConnection = await mongoose.connect(MONGO_URL, {
         serverSelectionTimeoutMS: 5000,
         maxPoolSize: 10
     });
@@ -69,24 +67,24 @@ app.set('trust proxy', 1);
 
 // 2. Reemplazá tu configuración de session por esta:
 app.use(session({
-    secret: 'super-etendart-secret-key-2026',
-    resave: false,               // En producción es mejor false con connect-mongo
-    saveUninitialized: false,    // No guardamos sesiones vacías
-    proxy: true,                 // Le avisa a express-session que confíe en Vercel
+    secret: process.env.SESSION_SECRET || 'development-secret-change-me',
+    resave: false,
+    saveUninitialized: false,
+    proxy: true,
     store: MongoStore.create({
-        mongoUrl: "mongodb+srv://fernandogonzalez_db_user:superetendart@cluster0.e6ufwoz.mongodb.net/superetendart?retryWrites=true&w=majority"
+        mongoUrl: MONGO_URL
     }),
     cookie: {
-        secure: true,            // 🚀 CAMBIO CLAVE: SÍ o SÍ true porque Vercel corre en HTTPS
-        sameSite: 'lax',         // 🚀 CAMBIO CLAVE: Lax permite mantener la cookie navegando tu web
-        maxAge: 24 * 60 * 60 * 1000 // 1 día de duración
+        secure: true,
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60 * 1000
     }
 }));
 
 // =============================================================================
-// 🔑 TU CÓDIGO FIJO MAESTRO (El que le pasás a los integrantes de la banda)
+// 🔑 CÓDIGO SECRETO DE LA BANDA (desde .env)
 // =============================================================================
-const CODIGO_SECRETO_BANDA = "ETENDART_BANDA_2026";
+const CODIGO_SECRETO_BANDA = process.env.CODIGO_SECRETO_BANDA || 'development-banda-code';
 
 // CONFIGURACIÓN DE NODEMAILER (Para envío de correos reales)
 const EMAIL_USER = process.env.EMAIL_USER;
@@ -99,14 +97,13 @@ const mailConfigured = Boolean(EMAIL_USER && EMAIL_PASS);
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'fernando.gonzalez28061991@gmail.com', // Reemplazá esto por tu cuenta de Gmail de envío
-        pass: 'hpwqlkqdjedynzid'           // Poné acá tu clave de aplicación de 16 letras limpia
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     }
 });
 
-
 // Verificación automática del canal de correos al arrancar
-const tieneClavesMail = process.env.EMAIL_USER || 'fernandogonzalez28061991@gmail.com';
+const tieneClavesMail = Boolean(process.env.EMAIL_USER && process.env.EMAIL_PASS);
 if (!tieneClavesMail) {
     console.warn('⚠️ EMAIL_USER y/o EMAIL_PASS no están definidos. No se enviarán correos.');
 } else {

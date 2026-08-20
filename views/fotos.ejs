@@ -51,10 +51,10 @@
             border-top: 1px solid #141414;
         }
 
-        .btn-reaccion {
+        /* Botones genéricos */
+        .btn-accion {
             background: none;
             border: none;
-            color: #888;
             font-size: 16px;
             cursor: pointer;
             display: flex;
@@ -64,17 +64,62 @@
             transition: color 0.2s;
         }
 
-        .btn-reaccion.liked {
+        .btn-accion.btn-like {
+            color: #888;
+        }
+
+        .btn-accion.btn-like.liked {
             color: #ff3040;
         }
 
-        /* Corazón rojo si ya dio MG */
-        .btn-borrar {
-            background: none;
-            border: none;
+        .btn-accion.btn-delete {
             color: #ff3040;
-            cursor: pointer;
             font-size: 14px;
+        }
+
+        /* Panel de administración */
+        .admin-panel {
+            max-width: 600px;
+            margin: 30px auto;
+            background: #0d0d0d;
+            border: 2px dashed #ffb703;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .admin-panel h3 {
+            color: #ffb703;
+            margin-top: 0;
+        }
+
+        .admin-panel form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .admin-panel input[type="file"] {
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .admin-panel button {
+            background: #ffb703;
+            color: #000;
+            border: none;
+            padding: 10px 25px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .empty-state {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 40px;
+            color: gray;
         }
 
         @media (max-width: 480px) {
