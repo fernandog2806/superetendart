@@ -607,7 +607,9 @@ footer {
     .nav-links > li > a.main-nav-link {
         display: block !important;
         visibility: visible;
-        color: #f2f2f2;
+        color: #ffffff !important;
+        font-weight: 600;
+        text-shadow: 0 1px 3px #000;
     }
 
     .hamburger {
@@ -690,8 +692,11 @@ footer {
 
         .nav-links > li > a {
             padding: 5px 0;
-            font-size: 0.95em;
+            color: #ffffff !important;
+            font-size: 1em;
+            font-weight: 600;
             line-height: 1.2;
+            text-shadow: 0 1px 3px #000;
         }
 
         .nav-links .spotify-link,
