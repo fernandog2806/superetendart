@@ -843,3 +843,22 @@ footer {
     padding: 6px 0;
     /* Hace que la zona táctil sea cómoda pero compacta */
 }
+/* Ajuste definitivo y compacto para el contenedor del menú móvil */
+.nav-links.open {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    /* Empuja todo hacia arriba de forma natural */
+    gap: 15px !important;
+    /* Controla la distancia exacta entre cada palabra */
+    padding-top: 30px !important;
+    /* Despega la primera palabra del logo */
+}
+
+/* Limpiamos cualquier margen viejo de los elementos internos */
+.nav-links.open li {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    text-align: center !important;
+}
