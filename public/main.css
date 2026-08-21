@@ -691,7 +691,7 @@ footer {
         }
 
         .nav-links > li > a {
-            padding: 5px 0;
+            padding: 8px 0;
             color: #ffffff !important;
             font-size: 1em;
             font-weight: 600;
@@ -703,8 +703,8 @@ footer {
         .nav-links .youtube-link,
         .nav-links .instagram-link,
         .nav-links .facebook-link {
-            padding: 5px 0;
-            margin: 2px auto;
+            padding: 10px 20px;
+            margin: 8px auto;
         }
 
         .nav-text-short { display: none; }
