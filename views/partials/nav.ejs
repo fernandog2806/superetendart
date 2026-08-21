@@ -4,66 +4,72 @@
         <button class="hamburger" id="hamburger">☰</button>
 
         <ul class="nav-links">
-            <!-- 1. SOLAPAS PRINCIPALES DE NAVEGACIÓN -->
+            <!-- 1. SOLAPAS PRINCIPALES DE NAVEGACIÓN (Oculta la pestaña actual) -->
             <% menuFiltrado.forEach(enlace=> { %>
                 <% const esEnlaceSocial=/spotify|youtube|instagram|facebook/.test(String(enlace.url).toLowerCase()); %>
                     <% if (!esEnlaceSocial) { %>
-                        <li>
-                            <a href="<%= enlace.url %>" class="main-nav-link">
-                                <%= enlace.texto %>
-                            </a>
-                        </li>
-                        <% } %>
-                            <% }) %>
+                        <% /* Condición mágica: Solo dibuja la solapa si NO es la página actual */ %>
+                            <% if (enlace.url !==paginaActual) { %>
+                                <li>
+                                    <a href="<%= enlace.url %>" class="main-nav-link">
+                                        <%= enlace.texto %>
+                                    </a>
+                                </li>
+                                <% } %>
+                                    <% } %>
+                                        <% }) %>
 
-                                <!-- 2. REDES SOCIALES DENTRO DEL MENÚ MÓVIL (Se adaptan según pantalla) -->
-                                <% menuFiltrado.forEach(enlace=> { %>
-                                    <% const
-                                        esEnlaceSocial=/spotify|youtube|instagram|facebook/.test(String(enlace.url).toLowerCase());
-                                        %>
-                                        <% if (esEnlaceSocial) { %>
-                                            <% let shortText=enlace.texto; if (enlace.url.includes('spotify'))
-                                                shortText='Spotify' ; else if (enlace.url.includes('youtube'))
-                                                shortText='YouTube' ; else if (enlace.url.includes('instagram'))
-                                                shortText='Instagram' ; else if (enlace.url.includes('facebook'))
-                                                shortText='Facebook' ; %>
-                                                <li class="social-nav-item">
-                                                    <a href="<%= enlace.url %>"
-                                                        class="<%= enlace.clase || 'social-link' %>">
-                                                        <span class="nav-text-full">
-                                                            <%= enlace.texto %>
-                                                        </span>
-                                                        <span class="nav-text-short">
-                                                            <%= shortText %>
-                                                        </span>
-                                                    </a>
-                                                </li>
-                                                <% } %>
-                                                    <% }) %>
-
-                                                        <!-- 3. BOTÓN DINÁMICO DE INICIO DE SESIÓN / USUARIO -->
-                                                        <% if (usuarioLogueado) { %>
-                                                            <li class="user-menu"
-                                                                style="display: flex; align-items: center; gap: 10px; justify-content: center; width: 100%;">
-                                                                <span style="color: #ffb703; font-weight: bold;">
-                                                                    👤 <%= usuarioLogueado.username %>
-                                                                        <%= usuarioLogueado.rol==='dueño' ? '(Banda)'
-                                                                            : '' %>
-                                                                </span>
-                                                                <a href="/logout"
-                                                                    style="color: #ff3040; text-decoration: none; font-size: 14px;">Salir</a>
+                                            <!-- 2. REDES SOCIALES DENTRO DEL MENÚ MÓVIL -->
+                                            <% menuFiltrado.forEach(enlace=> { %>
+                                                <% const
+                                                    esEnlaceSocial=/spotify|youtube|instagram|facebook/.test(String(enlace.url).toLowerCase());
+                                                    %>
+                                                    <% if (esEnlaceSocial) { %>
+                                                        <% let shortText=enlace.texto; if
+                                                            (enlace.url.includes('spotify')) shortText='Spotify' ; else
+                                                            if (enlace.url.includes('youtube')) shortText='YouTube' ;
+                                                            else if (enlace.url.includes('instagram'))
+                                                            shortText='Instagram' ; else if
+                                                            (enlace.url.includes('facebook')) shortText='Facebook' ; %>
+                                                            <li class="social-nav-item">
+                                                                <a href="<%= enlace.url %>"
+                                                                    class="<%= enlace.clase || 'social-link' %>">
+                                                                    <span class="nav-text-full">
+                                                                        <%= enlace.texto %>
+                                                                    </span>
+                                                                    <span class="nav-text-short">
+                                                                        <%= shortText %>
+                                                                    </span>
+                                                                </a>
                                                             </li>
-                                                            <% } else { %>
-                                                                <% if (paginaActual !=='/login' && paginaActual
-                                                                    !=='/register' ) { %>
-                                                                    <li style="width: 100%; text-align: center;">
-                                                                        <a href="/login" class="login-link"
-                                                                            style="color: #ffb703; font-weight: bold; display: inline-block;">
-                                                                            Iniciar Sesión / Registrarse
-                                                                        </a>
-                                                                    </li>
-                                                                    <% } %>
-                                                                        <% } %>
+                                                            <% } %>
+                                                                <% }) %>
+
+                                                                    <!-- 3. BOTÓN DINÁMICO DE INICIO DE SESIÓN / USUARIO -->
+                                                                    <% if (usuarioLogueado) { %>
+                                                                        <li class="user-menu"
+                                                                            style="display: flex; align-items: center; gap: 10px; justify-content: center; width: 100%;">
+                                                                            <span
+                                                                                style="color: #ffb703; font-weight: bold;">
+                                                                                👤 <%= usuarioLogueado.username %>
+                                                                                    <%= usuarioLogueado.rol==='dueño'
+                                                                                        ? '(Banda)' : '' %>
+                                                                            </span>
+                                                                            <a href="/logout"
+                                                                                style="color: #ff3040; text-decoration: none; font-size: 14px;">Salir</a>
+                                                                        </li>
+                                                                        <% } else { %>
+                                                                            <% if (paginaActual !=='/login' &&
+                                                                                paginaActual !=='/register' ) { %>
+                                                                                <li
+                                                                                    style="width: 100%; text-align: center;">
+                                                                                    <a href="/login" class="login-link"
+                                                                                        style="color: #ffb703; font-weight: bold; display: inline-block;">
+                                                                                        Iniciar Sesión / Registrarse
+                                                                                    </a>
+                                                                                </li>
+                                                                                <% } %>
+                                                                                    <% } %>
         </ul>
 
         <!-- ICONOS SOCIALES FIJOS PARA ESCRITORIO -->
