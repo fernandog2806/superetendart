@@ -11,6 +11,7 @@ const { put, del } = require('@vercel/blob');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 const { Usuario, Foto } = require('./models');
 
 // CONFIGURACIÓN CLAVE: Evita el error de la barra final (Cannot GET /fotos/)
@@ -61,10 +62,6 @@ if (!blobConfigured) {
     console.warn('⚠️ Vercel Blob no está configurado. Las fotos se guardarán localmente en:', localUploadDir);
 }
 
-// 1. Esto arriba de la sesión (OBLIGATORIO para Vercel)
-app.set('trust proxy', 1);
-
-// 2. Reemplazá tu configuración de session por esta:
 app.use(session({
     secret: process.env.SESSION_SECRET || 'development-secret-change-me',
     resave: false,
@@ -256,7 +253,6 @@ app.post('/login', async (req, res) => {
         }
 
         // 🚀 Compara la contraseña ingresada con el hash encriptado de MongoDB
-        const bcrypt = require('bcrypt');
         const esClaveCorrecta = await bcrypt.compare(password, usuario.password);
 
         if (!esClaveCorrecta) {
@@ -475,14 +471,6 @@ app.post('/borrar-foto', async (req, res) => {
         console.error('Error al eliminar foto:', err);
         res.status(500).send('Error al eliminar.');
     }
-});
-
-app.get('/', (req, res) => {
-    // Verificamos si existe el usuario en la sesión
-    const usuarioLogueado = req.session.usuario || null;
-
-    // Le pasamos el usuario a la vista index.ejs
-    res.render('index', { usuario: usuarioLogueado, integrantes });
 });
 
 // Cerrar Sesión

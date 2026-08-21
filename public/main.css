@@ -583,13 +583,28 @@ footer {
     }
 
     .nav-links.open {
-        display: flex;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+        gap: 15px !important;
         width: 100%;
         position: absolute;
         top: 60px;
         left: 0;
         right: 0;
+        padding-top: 30px !important;
         padding-bottom: 25px;
+    }
+
+    .nav-links.open li {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        text-align: center !important;
+    }
+
+    .nav-links.open a {
+        padding: 6px 0;
     }
 
     .nav-links .main-nav-link {
@@ -691,7 +706,6 @@ footer {
     h2,
     .album-card,
     .album-info,
-    h2,
     p {
         text-align: center;
     }
@@ -832,33 +846,4 @@ footer {
     .fotos-page .feed-container {
         grid-template-columns: 1fr;
     }
-}
-
-/* Ajuste de espaciado prolijo para el menú móvil */
-.nav-links.open li {
-    margin: 12px 0;
-    /* Reduce el aire arriba y abajo de cada palabra */
-}
-.nav-links.open a {
-    padding: 6px 0;
-    /* Hace que la zona táctil sea cómoda pero compacta */
-}
-/* Ajuste definitivo y compacto para el contenedor del menú móvil */
-.nav-links.open {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: flex-start !important;
-    /* Empuja todo hacia arriba de forma natural */
-    gap: 15px !important;
-    /* Controla la distancia exacta entre cada palabra */
-    padding-top: 30px !important;
-    /* Despega la primera palabra del logo */
-}
-
-/* Limpiamos cualquier margen viejo de los elementos internos */
-.nav-links.open li {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-    text-align: center !important;
 }
