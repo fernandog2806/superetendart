@@ -5,7 +5,9 @@
         <ul class="nav-links">
             <% menuFiltrado.forEach(enlace=> { %>
                 <% 
-                    const claseAdicional = enlace.clase ? `class=\"${enlace.clase}\" ` : "";
+                    const esEnlaceSocial = /spotify|youtube|instagram|facebook/.test(String(enlace.url).toLowerCase());
+                    const claseEnlace = esEnlaceSocial ? enlace.clase : 'main-nav-link';
+                    const claseAdicional = claseEnlace ? `class=\"${claseEnlace}\" ` : "";
                     let shortText = enlace.texto;
                     if (enlace.url && enlace.url.includes('spotify')) shortText = 'Spotify';
                     else if (enlace.url && enlace.url.includes('youtube')) shortText = 'YouTube';
@@ -14,8 +16,7 @@
                 %>
                     <li>
                         <a href="<%= enlace.url %>" <%- claseAdicional %>>
-                            <% const isSocial = /spotify|youtube|instagram|facebook/.test(String(enlace.url).toLowerCase()); %>
-                            <% if (isSocial) { %>
+                            <% if (esEnlaceSocial) { %>
                                 <span class="nav-text-full"><%= enlace.texto %></span>
                                 <span class="nav-text-short"><%= shortText %></span>
                             <% } else { %>
