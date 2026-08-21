@@ -589,7 +589,19 @@ footer {
         top: 60px;
         left: 0;
         right: 0;
+        align-items: center;
         padding-bottom: 25px;
+    }
+
+    .nav-links > li {
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-links > li > a {
+        display: block;
+        width: 100%;
+        padding: 8px 0;
     }
 
     .hamburger {
