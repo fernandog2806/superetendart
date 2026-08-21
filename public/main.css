@@ -682,9 +682,29 @@ footer {
     .nav-text-full { display: inline; }
 
     @media (max-width: 480px) {
-         .nav-text-short { display: inline; }
-         .nav-text-full { display: none; }
-         .user-menu { margin-bottom: 20px; }
+        .nav-links.open {
+            top: 52px;
+            padding-bottom: 25px;
+            gap: 0;
+        }
+
+        .nav-links > li > a {
+            padding: 5px 0;
+            font-size: 0.95em;
+            line-height: 1.2;
+        }
+
+        .nav-links .spotify-link,
+        .nav-links .youtube-link,
+        .nav-links .instagram-link,
+        .nav-links .facebook-link {
+            padding: 5px 0;
+            margin: 2px auto;
+        }
+
+        .nav-text-short { display: none; }
+        .nav-text-full { display: inline; }
+        .user-menu { margin-bottom: 12px; }
     }
     .videos-section {
         gap: 24px;
