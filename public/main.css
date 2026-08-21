@@ -592,6 +592,11 @@ footer {
         padding-bottom: 25px;
     }
 
+    .nav-links .main-nav-link {
+        display: block !important;
+        visibility: visible !important;
+    }
+
     .hamburger {
         display: block;
     }
