@@ -589,6 +589,7 @@ footer {
         top: 60px;
         left: 0;
         right: 0;
+        padding-bottom: 25px;
     }
 
     .hamburger {

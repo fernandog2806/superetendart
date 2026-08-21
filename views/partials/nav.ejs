@@ -16,8 +16,13 @@
                 %>
                     <li>
                         <a href="<%= enlace.url %>" <%- claseAdicional %>>
-                            <span class="nav-text-full"><%= enlace.texto %></span>
-                            <span class="nav-text-short"><%= shortText %></span>
+                            <% const isSocial = /spotify|youtube|instagram|facebook/.test(String(enlace.url).toLowerCase()); %>
+                            <% if (isSocial) { %>
+                                <span class="nav-text-full"><%= enlace.texto %></span>
+                                <span class="nav-text-short"><%= shortText %></span>
+                            <% } else { %>
+                                <span class="nav-text-full"><%= enlace.texto %></span>
+                            <% } %>
                         </a>
                     </li>
             <% }) %>
