@@ -589,27 +589,7 @@ footer {
         top: 60px;
         left: 0;
         right: 0;
-        align-items: center;
         padding-bottom: 25px;
-    }
-
-    .nav-links > li {
-        width: 100%;
-        text-align: center;
-    }
-
-    .nav-links > li > a {
-        display: block;
-        width: 100%;
-        padding: 8px 0;
-    }
-
-    .nav-links > li > a.main-nav-link {
-        display: block !important;
-        visibility: visible;
-        color: #ffffff !important;
-        font-weight: 600;
-        text-shadow: 0 1px 3px #000;
     }
 
     .hamburger {
@@ -684,32 +664,9 @@ footer {
     .nav-text-full { display: inline; }
 
     @media (max-width: 480px) {
-        .nav-links.open {
-            top: 52px;
-            padding-bottom: 25px;
-            gap: 0;
-        }
-
-        .nav-links > li > a {
-            padding: 8px 0;
-            color: #ffffff !important;
-            font-size: 1em;
-            font-weight: 600;
-            line-height: 1.2;
-            text-shadow: 0 1px 3px #000;
-        }
-
-        .nav-links .spotify-link,
-        .nav-links .youtube-link,
-        .nav-links .instagram-link,
-        .nav-links .facebook-link {
-            padding: 10px 20px;
-            margin: 8px auto;
-        }
-
-        .nav-text-short { display: none; }
-        .nav-text-full { display: inline; }
-        .user-menu { margin-bottom: 12px; }
+         .nav-text-short { display: inline; }
+         .nav-text-full { display: none; }
+         .user-menu { margin-bottom: 20px; }
     }
     .videos-section {
         gap: 24px;
