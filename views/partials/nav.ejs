@@ -6,9 +6,21 @@
         <button class="hamburger" id="hamburger">☰</button>
         <ul class="nav-links">
             <% menuFiltrado.forEach(enlace=> { %>
-                <% const claseAdicional=enlace.clase ? `class="${enlace.clase}" ` : "" ; %>
-                    <li><a href="<%= enlace.url %>" <%- claseAdicional %>><%= enlace.texto %></a></li>
-                    <% }) %>
+                <% 
+                    const claseAdicional = enlace.clase ? `class=\"${enlace.clase}\" ` : "";
+                    let shortText = enlace.texto;
+                    if (enlace.url && enlace.url.includes('spotify')) shortText = 'Spotify';
+                    else if (enlace.url && enlace.url.includes('youtube')) shortText = 'YouTube';
+                    else if (enlace.url && enlace.url.includes('instagram')) shortText = 'Instagram';
+                    else if (enlace.url && enlace.url.includes('facebook')) shortText = 'Facebook';
+                %>
+                    <li>
+                        <a href="<%= enlace.url %>" <%- claseAdicional %>>
+                            <span class="nav-text-full"><%= enlace.texto %></span>
+                            <span class="nav-text-short"><%= shortText %></span>
+                        </a>
+                    </li>
+            <% }) %>
 
                         <!-- BOTÓN DINÁMICO DE INICIO DE SESIÓN / USUARIO -->
                         <% if (usuarioLogueado) { %>
