@@ -1,6 +1,10 @@
 # 🎸 SUPER ETENDART - Plataforma Web Full-Stack para Bandas
 
+<<<<<<< HEAD
 Plataforma web real e institucional desarrollada para la banda de rock emergente **SUPER ETENDART**. El proyecto combina un sitio web de alta estética responsive con un backend robusto para la gestión de contenidos y una comunidad de fanáticos, optimizado para correr.
+=======
+Plataforma web real e institucional desarrollada para la banda de rock emergente **SUPER ETENDART**. El proyecto combina un sitio web de alta estética responsive con un backend robusto para la gestión de contenidos y una comunidad de fanáticos.
+>>>>>>> d9aa3ef (Reedme)
 
 ## 🛠️ Tecnologías Utilizadas
 
