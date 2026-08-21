@@ -602,16 +602,6 @@ footer {
         visibility: visible !important;
     }
 
-    /* Mostrar etiquetas cortas en móvil para enlaces sociales en la navbar */
-    .nav-text-short { display: none; }
-    .nav-text-full { display: inline; }
-
-    @media (max-width: 480px) {
-         .nav-text-short { display: inline; }
-         .nav-text-full { display: none; }
-         .user-menu { margin-bottom: 20px; }
-    }
-
     .hamburger {
         display: block;
     }
@@ -679,6 +669,15 @@ footer {
     }
 
 
+    /* Mostrar etiquetas cortas en móvil para enlaces sociales en la navbar */
+    .nav-text-short { display: none; }
+    .nav-text-full { display: inline; }
+
+    @media (max-width: 480px) {
+         .nav-text-short { display: inline; }
+         .nav-text-full { display: none; }
+         .user-menu { margin-bottom: 20px; }
+    }
     .videos-section {
         gap: 24px;
         padding: 12px 0;
