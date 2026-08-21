@@ -204,7 +204,11 @@ app.post('/register', async (req, res) => {
         let rolAsignado = 'fan';
 
         if (esDueñoCheck) {
-            if (codigoBanda === CODIGO_SECRETO_BANDA) {
+            // 🚀 CAMBIO ACÁ: Limpiamos espacios y pasamos a MAYÚSCULAS lo que el usuario tipeó
+            const codigoLimpio = codigoBanda ? codigoBanda.trim().toUpperCase() : '';
+
+            // Comparamos el código ya transformado contra tu constante del servidor
+            if (codigoLimpio === CODIGO_SECRETO_BANDA) {
                 rolAsignado = 'dueño';
             } else {
                 return res.render('register', { error: 'Código secreto incorrecto. No podés registrarte como dueño.' });
@@ -232,6 +236,7 @@ app.post('/register', async (req, res) => {
         res.render('register', { error: 'Hubo un error interno en el servidor. Intentá más tarde.' });
     }
 });
+
 
 
 
