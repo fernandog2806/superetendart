@@ -1,51 +1,72 @@
-<% const menuFiltrado = enlacesNav; %>
+<% const menuFiltrado=enlacesNav; %>
     <nav class="navbar">
         <div class="logo"><a href="/">SUPER ETENDART</a></div>
         <button class="hamburger" id="hamburger">☰</button>
-        <ul class="nav-links">
-            <% menuFiltrado.forEach(enlace=> { %>
-                <% 
-                    const esEnlaceSocial = /spotify|youtube|instagram|facebook/.test(String(enlace.url).toLowerCase());
-                    const claseEnlace = esEnlaceSocial ? enlace.clase : 'main-nav-link';
-                    const claseAdicional = claseEnlace ? `class=\"${claseEnlace}\" ` : "";
-                    let shortText = enlace.texto;
-                    if (enlace.url && enlace.url.includes('spotify')) shortText = 'Spotify';
-                    else if (enlace.url && enlace.url.includes('youtube')) shortText = 'YouTube';
-                    else if (enlace.url && enlace.url.includes('instagram')) shortText = 'Instagram';
-                    else if (enlace.url && enlace.url.includes('facebook')) shortText = 'Facebook';
-                %>
-                    <li>
-                        <a href="<%= enlace.url %>" <%- claseAdicional %>>
-                            <% if (esEnlaceSocial) { %>
-                                <span class="nav-text-full"><%= enlace.texto %></span>
-                                <span class="nav-text-short"><%= shortText %></span>
-                            <% } else { %>
-                                <span class="nav-text-full"><%= enlace.texto %></span>
-                            <% } %>
-                        </a>
-                    </li>
-            <% }) %>
 
-                        <!-- BOTÓN DINÁMICO DE INICIO DE SESIÓN / USUARIO -->
-                        <% if (usuarioLogueado) { %>
-                            <!-- Si ya inició sesión, muestra su nombre y el botón de salir en cualquier página -->
-                            <li class="user-menu" style="display: flex; align-items: center; gap: 10px;">
-                                <span style="color: #ffb703; font-weight: bold;">
-                                    👤 <%= usuarioLogueado.username %>
-                                        <%= usuarioLogueado.rol==='dueño' ? '(Banda)' : '' %>
-                                </span>
-                                <a href="/logout"
-                                    style="color: #ff3040; text-decoration: none; font-size: 14px;">Salir</a>
-                            </li>
-                            <% } else { %>
-                                <!-- Si NO inició sesión, muestra el botón de ingreso, EXCEPTO en las pantallas de login y registro -->
-                                <% if (paginaActual !=='/login' && paginaActual !=='/register' ) { %>
-                                    <li><a href="/login" class="login-link"
-                                            style="color: #ffb703; font-weight: bold;">Iniciar Sesión / Registrarse</a>
-                                    </li>
-                                    <% } %>
-                                        <% } %>
+        <ul class="nav-links">
+            <!-- 1. SOLAPAS PRINCIPALES DE NAVEGACIÓN -->
+            <% menuFiltrado.forEach(enlace=> { %>
+                <% const esEnlaceSocial=/spotify|youtube|instagram|facebook/.test(String(enlace.url).toLowerCase()); %>
+                    <% if (!esEnlaceSocial) { %>
+                        <li>
+                            <a href="<%= enlace.url %>" class="main-nav-link">
+                                <%= enlace.texto %>
+                            </a>
+                        </li>
+                        <% } %>
+                            <% }) %>
+
+                                <!-- 2. REDES SOCIALES DENTRO DEL MENÚ MÓVIL (Se adaptan según pantalla) -->
+                                <% menuFiltrado.forEach(enlace=> { %>
+                                    <% const
+                                        esEnlaceSocial=/spotify|youtube|instagram|facebook/.test(String(enlace.url).toLowerCase());
+                                        %>
+                                        <% if (esEnlaceSocial) { %>
+                                            <% let shortText=enlace.texto; if (enlace.url.includes('spotify'))
+                                                shortText='Spotify' ; else if (enlace.url.includes('youtube'))
+                                                shortText='YouTube' ; else if (enlace.url.includes('instagram'))
+                                                shortText='Instagram' ; else if (enlace.url.includes('facebook'))
+                                                shortText='Facebook' ; %>
+                                                <li class="social-nav-item">
+                                                    <a href="<%= enlace.url %>"
+                                                        class="<%= enlace.clase || 'social-link' %>">
+                                                        <span class="nav-text-full">
+                                                            <%= enlace.texto %>
+                                                        </span>
+                                                        <span class="nav-text-short">
+                                                            <%= shortText %>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                                <% } %>
+                                                    <% }) %>
+
+                                                        <!-- 3. BOTÓN DINÁMICO DE INICIO DE SESIÓN / USUARIO -->
+                                                        <% if (usuarioLogueado) { %>
+                                                            <li class="user-menu"
+                                                                style="display: flex; align-items: center; gap: 10px; justify-content: center; width: 100%;">
+                                                                <span style="color: #ffb703; font-weight: bold;">
+                                                                    👤 <%= usuarioLogueado.username %>
+                                                                        <%= usuarioLogueado.rol==='dueño' ? '(Banda)'
+                                                                            : '' %>
+                                                                </span>
+                                                                <a href="/logout"
+                                                                    style="color: #ff3040; text-decoration: none; font-size: 14px;">Salir</a>
+                                                            </li>
+                                                            <% } else { %>
+                                                                <% if (paginaActual !=='/login' && paginaActual
+                                                                    !=='/register' ) { %>
+                                                                    <li style="width: 100%; text-align: center;">
+                                                                        <a href="/login" class="login-link"
+                                                                            style="color: #ffb703; font-weight: bold; display: inline-block;">
+                                                                            Iniciar Sesión / Registrarse
+                                                                        </a>
+                                                                    </li>
+                                                                    <% } %>
+                                                                        <% } %>
         </ul>
+
+        <!-- ICONOS SOCIALES FIJOS PARA ESCRITORIO -->
         <div class="social-icons">
             <a href="https://instagram.com" target="_blank" aria-label="Instagram" class="instagram">
                 <svg width="24" height="24" fill="#00cfff" viewBox="0 0 24 24">
