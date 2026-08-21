@@ -597,6 +597,11 @@ footer {
         visibility: visible !important;
     }
 
+    .nav-links > li > a[href^="/"] {
+        display: block !important;
+        visibility: visible !important;
+    }
+
     .hamburger {
         display: block;
     }
