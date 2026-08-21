@@ -834,7 +834,12 @@ footer {
     }
 }
 
-/* Espaciado superior para el primer elemento del menú móvil */
-.nav-links.open li:first-child {
-    margin-top: 20px;
+/* Ajuste de espaciado prolijo para el menú móvil */
+.nav-links.open li {
+    margin: 12px 0;
+    /* Reduce el aire arriba y abajo de cada palabra */
+}
+.nav-links.open a {
+    padding: 6px 0;
+    /* Hace que la zona táctil sea cómoda pero compacta */
 }
