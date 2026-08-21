@@ -836,10 +836,10 @@ footer {
 
 /* Ajuste de espaciado prolijo para el menú móvil */
 .nav-links.open li {
-    margin: 6px 0;
+    margin: 3px 0;
     /* Reduce el aire arriba y abajo de cada palabra */
 }
 .nav-links.open a {
-    padding: 6px 0;
+    padding: 3px 0;
     /* Hace que la zona táctil sea cómoda pero compacta */
 }
