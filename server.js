@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 // CADENA DE CONEXIÓN DINÁMICA (usa .env en local o en producción)
-const MONGO_URL = process.env.MONGO_URL || 'mongodb://localhost:27017/superetendart';
+const MONGO_URL = process.env.MONGO_URL || process.env.MONGO_URI || 'mongodb://localhost:27017/superetendart';
 
 let cachedConnection = null;
 
@@ -41,8 +41,7 @@ async function conectarBaseDeDatos() {
         maxPoolSize: 10
     });
 
-
-    console.log('🚀 MongoDB Conectado con Éxito'); // Este dejalo igual, es solo un aviso
+    console.log('🚀 MongoDB Conectado con Éxito');
     return cachedConnection;
 }
 
@@ -75,7 +74,7 @@ app.use(session({
         mongoUrl: MONGO_URL
     }),
     cookie: {
-        secure: true,
+        secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         maxAge: 24 * 60 * 60 * 1000
     }
@@ -90,6 +89,10 @@ const CODIGO_SECRETO_BANDA = process.env.CODIGO_SECRETO_BANDA || 'development-ba
 const EMAIL_USER = process.env.EMAIL_USER;
 const EMAIL_PASS = process.env.EMAIL_PASS;
 const mailConfigured = Boolean(EMAIL_USER && EMAIL_PASS);
+
+if (!mailConfigured) {
+    console.warn('⚠️ EMAIL_USER y/o EMAIL_PASS no están definidos. Los emails no se enviarán.');
+}
 
 // =============================================================================
 // 📧 CONFIGURACIÓN MAESTRA DE CORREO (GMAIL)
