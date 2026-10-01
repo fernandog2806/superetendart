@@ -80,7 +80,11 @@ app.use(session({
 // =============================================================================
 // 🔑 CÓDIGO SECRETO DE LA BANDA (desde .env)
 // =============================================================================
-const CODIGO_SECRETO_BANDA = process.env.CODIGO_SECRETO_BANDA || 'development-banda-code';
+const CODIGO_SECRETO_BANDA = process.env.CODIGO_SECRETO_BANDA;
+
+if (!CODIGO_SECRETO_BANDA) {
+    throw new Error('❌ CODIGO_SECRETO_BANDA no está configurado.');
+}
 
 // CONFIGURACIÓN DE NODEMAILER (Para envío de correos reales)
 const EMAIL_USER = process.env.EMAIL_USER;
